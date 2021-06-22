@@ -3,10 +3,21 @@ import requests
 
 
 class TwitterConnection:
-    # Option of supplying either a filepath to bearer token or the direct
-    #   string form of it; otherwise will default to predefined path
-    def __init__(self, lang, is_archive=False, cred_path='', bearer_token=''):
-        self._langs = {"russian": "ru", "english": "en", "spanish": "es"}
+    """
+    Option of supplying either a
+      filepath @cred_path to bearer token
+      or the direct @bearer_token string form of it
+      -- defaults to '../twitter-connection/credentials.txt'
+
+    @cred_prefix is the prefix given to the bearer token inside @cred_path
+
+    @is_archive is this a 'Full-Archive Search'? If not, then is 'Recent Search'
+    """
+    def __init__(self,
+                 cred_path='',
+                 cred_prefix='PERSONAL',
+                 bearer_token='',
+                 is_archive=False):
 
         self._prefix_search_recent = 'https://api.twitter.com/2/tweets/search/recent?query'
         self._prefix_search_archive = 'https://api.twitter.com/2/tweets/search/all?query'
@@ -19,16 +30,18 @@ class TwitterConnection:
                       else self._prefix_search_archive
 
         # TXT filepath with Bearer token saved as:
-        #   'BEARER "XXXYYYZZZ..."'
-        # NOTE: must be prepended with 'BEARER'
+        #   '$TOKEN_PREFIX$ "XXXYYYZZZ..."'
         self.cred_path = cred_path if len(cred_path)>0 \
             else r'../twitter-connection/credentials.txt'
+        # Prefix to identify bearer token located in credentials file
+        self.cred_prefix = cred_prefix
 
-        # Alternative option to giving a filepath
+        # Direct string bearer token
         self.bearer_token = bearer_token
-
         self.header = self.create_headers()
 
+        # In my use cases, query conditions and fields don't change dynamically,
+        #   therefore just saved here
         self.query_cond = ''
         self.fields_tweet = ''
         self.fields_expan = ''
@@ -37,7 +50,9 @@ class TwitterConnection:
 
         self.url = ''
 
+        # Saved response from .connect()
         self.response = None
+        # Extracted next token for pagination of searches
         self.next_token = ''
 
     # If raw token was passed during object creation, use that
@@ -50,7 +65,8 @@ class TwitterConnection:
             with open(self.cred_path, 'r') as c:
                 f = c.read()
 
-                token = re.search(r'BEARER[\w\s]+[\'\"]?(.+)[\'\"]?\b', f).group(1)
+                token = re.search(
+                    fr'{self.cred_prefix}[\w\s]+[\'\"]?(.+)[\'\"]?\b', f).group(1)
                 return token
         except IOError:
             print(f'Invalid file path: {self.cred_path}')
@@ -128,10 +144,12 @@ class TwitterConnection:
 
             return False
 
+    # Update and save query conditions
     def set_query(self, conditions=None):
         if conditions is not None:
             self.query_cond = conditions
 
+    # Update and save necessary fields
     def set_fields(self, tweet=None, expansions=None, user=None, place=None):
         if tweet is not None:
             self.fields_tweet = tweet
