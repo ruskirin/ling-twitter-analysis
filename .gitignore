@@ -3,3 +3,5 @@ twitter-connection/credentials.txt
 ambiguo/
 
 .ipynb_checkpoints
+
+*.txt

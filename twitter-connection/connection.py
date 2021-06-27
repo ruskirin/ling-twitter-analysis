@@ -1,5 +1,6 @@
 import re
 import requests
+from time import sleep
 
 
 class TwitterConnection:
@@ -22,9 +23,6 @@ class TwitterConnection:
         self._prefix_search_recent = 'https://api.twitter.com/2/tweets/search/recent?query'
         self._prefix_search_archive = 'https://api.twitter.com/2/tweets/search/all?query'
 
-        self.lang = self._langs[lang] \
-            if lang in self._langs.keys() \
-            else self._langs["english"]
         # Do a full-archive search?
         self.prefix = self._prefix_search_recent if is_archive==False \
                       else self._prefix_search_archive
@@ -47,6 +45,7 @@ class TwitterConnection:
         self.fields_expan = ''
         self.fields_user = ''
         self.fields_place = ''
+        self.results = 'max_results=100'
 
         self.url = ''
 
@@ -80,20 +79,25 @@ class TwitterConnection:
     # Combine query, fields and (if available) next_token into a proper URL
     def create_url(self, topic, next_token=None):
         if next_token is not None:
-            self.url = f'{self.prefix}={topic}' \
+            self.url = f'{self.prefix}={topic}' + ' ' + f'{self.query_cond}' \
+                       f'&{self.results}' \
                        f'&{next_token}' \
                        f'&{self.fields_tweet}' \
                        f'&{self.fields_expan}' \
                        f'&{self.fields_user}' \
                        f'&{self.fields_place}'
         else:
-            self.url = f'{self.prefix}={topic}' \
+            self.url = f'{self.prefix}={topic}' + ' ' + f'{self.query_cond}' \
+                       f'&{self.results}' \
                        f'&{self.fields_tweet}' \
                        f'&{self.fields_expan}' \
                        f'&{self.fields_user}' \
                        f'&{self.fields_place}'
 
-    def connect(self, query, is_next: bool = False):
+        print(f'URL: {self.url}')
+
+    # @time_interval wait for some time (seconds) between requests
+    def connect(self, query, is_next=False, time_interval=0):
         response = None
 
         # if is_next:
@@ -118,6 +122,9 @@ class TwitterConnection:
                   f"{e.args[0].text}")
 
         self.response = response.json()
+        # Wait for the requested time
+        sleep(time_interval)
+
         return self.get_next_token()
 
     # !!! PRIVATE !!!
