@@ -94,8 +94,6 @@ class TwitterConnection:
                        f'&{self.fields_user}' \
                        f'&{self.fields_place}'
 
-        print(f'URL: {self.url}')
-
     # @time_interval wait for some time (seconds) between requests
     def connect(self, query, is_next=False, time_interval=0):
         response = None

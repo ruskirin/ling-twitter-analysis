@@ -5,3 +5,7 @@ ambiguo/
 .ipynb_checkpoints
 
 *.txt
+
+*.csv
+
+saved/

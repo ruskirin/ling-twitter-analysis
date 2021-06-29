@@ -1,8 +1,8 @@
 Stative/ Verbs of saying, dynamic verbs 
 Ver		-	ve  vi  vê  
 Jurar		-	jur	
-Decir		- 	dig  dec  dij   dir  
-Dizer		- 	dig  diz  diss  dir
+Decir		- 	dig  dec  dij   dir  dic
+Dizer		- 	dig  diz  diss  dic
 Confesar	-	confies  confes
 Prometer	-	promet
 Mostrar	-	muestr  mostr
@@ -24,7 +24,7 @@ Contar		-	cont  cuent
 Epistemic/opinión/’raising verbs’ like parecer
 Suponer	-	supon
 Supor		-	sup  supunh  supus  supôs  supõe  supos
-Saber		-	sé  sab  sup
+Saber		-	sé  sab  sup  sep
 Pensar		-	piens  pens
 Imaginar	-	imagin
 Dudar		-	dud
@@ -34,36 +34,36 @@ Acreditar	-	acredit
 Achar 		-	ach
 Recordar 	-	recuerd  record
 Lembrar	-	lembr
-Acodar		-	acuerdo  acord
+Acordar	-	acuerdo  acord
 Temer 		-	tem
 Recear		-	rece
 Recomendar 	-	recomiend  recomend
-Parecer	-	parec  parezc  pareç  
+Parecer	-	parec  parezc  pareç
 Entender	-	entiend  entend
 Negar		-	neg  nieg
 Apostar	-	apuest  apost
-Predecir	-	predig  predic  predec
+Predecir	-	predig  predic  predec  predij
 Predizer	- 	predig  prediz  prediss  predir
-Prever		-
+Prever		-	preve
 Sentir		-	sient  sint  sent  
-Comprobar	-	comprueb , comprob
+Comprobar	-	comprueb  comprob  comprov
 Adivinar 	-	adivin
-Adivinhar	-	adivin
+Adivinhar	-	 adivin
 Conjeturar	-	conjetur
 Chutar		-	chut
-Dar(se) cuenta -	doy_cuenta  di_cuenta  dio_cuenta  da_cuenta  dier_cuenta  deis_cuenta  dé_cuenta
-Dar(se) conta -	do_conta  di_conta dio_conta da_conta  dá_conta  dier_conta  deis_conta  de_conta  dé_conta  dê_conta  dão_conta  
+Dar(se) cuenta -	doy_cuenta  di_cuenta dio_cuenta da_cuenta  dier_cuenta  deis_cuenta  dé_cuenta
+Dar(se) conta -	do_conta  di_conta dio_conta  da_conta  dá_conta  dier_conta  deis_conta  de_conta  dé_conta  dê_conta  dão_conta 
 Lamentar	-	lament 
 
 
 Volitional/desiderative/verbs of propositional attitude
 Rogar		-	rueg  rog
-Querer		-	quer  quier
+Querer		-	quer  quier  quis
 Esperar	-	esper 
 Desear		-	dese
 Desejar	-	desej
 Pedir		-	pid  ped  peç 
-Ojalá		-	ojalá
+Ojalá		-	ojalá  ohalá
 Oxalá		-	oxalá
 Tomara	-	tomara
 Suplicar	-	suplic  supliq
@@ -71,6 +71,6 @@ Solicitar	-	solicit
 Mandar	-	mand
 Ordenar	-	orden
 Insistir		-	insist
-Sugerir	-	sugier  suger  sugir  
+Sugerir	-	sugier  suger  sugir
 Preocupar	-	preocup
 Alegrar	-	alegr
