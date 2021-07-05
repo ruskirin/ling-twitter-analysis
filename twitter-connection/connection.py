@@ -53,6 +53,7 @@ class TwitterConnection:
         self.response = None
         # Extracted next token for pagination of searches
         self.next_token = ''
+        self.has_next = False
 
     # If raw token was passed during object creation, use that
     #   else look for a token in @cred_path
@@ -96,19 +97,14 @@ class TwitterConnection:
 
     # @time_interval wait for some time (seconds) between requests
     def connect(self, query, is_next=False, time_interval=0):
+        self.has_next = True
         response = None
 
-        # if is_next:
-        #     if len(self.next_token) == 0:
-        #         self.create_url(query, fields)
-        #     else:
-        #         self.create_url(query, fields,
-        #                     f'next_token={self.next_token}')
-        # else:
-        #     self.create_url(query, fields)
-
-        if is_next and (len(self.next_token) > 0):
-            self.create_url(query, f'next_token={self.next_token}')
+        if is_next:
+            if len(self.next_token) == 0:
+                self.create_url(query)
+            else:
+                self.create_url(query, f'next_token={self.next_token}')
         else:
             self.create_url(query)
 
@@ -125,29 +121,19 @@ class TwitterConnection:
 
         return self.get_next_token()
 
-    # !!! PRIVATE !!!
-    # Makes a get request and returns the response
-    def _connect_to_endpoint(self, url, headers):
-        response = requests.request('GET', url, headers=headers)
-
-        if response.status_code != 200:
-            raise ConnectionError(response)
-
-        return response
-
     def get_next_token(self):
         try:
             if self.response['meta']['next_token'] == self.next_token:
                 raise Exception("Repeated token")
 
             self.next_token = self.response['meta']['next_token']
-            return True
+            self.has_next = True
 
         except Exception as e:
-            print(f"No next token! {e.args[0]}")
-            self.next_token = '' # Reset variable
+            print(f"No next token! {e.args}")
 
-            return False
+            self.next_token = '' # Reset variable
+            self.has_next = False
 
     # Update and save query conditions
     def set_query(self, conditions=None):
@@ -164,3 +150,13 @@ class TwitterConnection:
             self.fields_user = user
         if place is not None:
             self.fields_place = place
+
+    # !!! PRIVATE !!!
+    # Makes a get request and returns the response
+    def _connect_to_endpoint(self, url, headers):
+        response = requests.request('GET', url, headers=headers)
+
+        if response.status_code != 200:
+            raise ConnectionError(response)
+
+        return response
