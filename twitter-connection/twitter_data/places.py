@@ -18,3 +18,10 @@ class Places(twitter_data.TwitterData):
                 other.original, ignore_index=True)
         except Exception as e:
             print(f'Failed to append data! {e.args[0]}')
+
+    def save_csv(self, prefix, lang, topic, num):
+        try:
+            super().save_csv(prefix, lang, topic, num)
+        except Exception as e:
+            print(f'Problems saving data to CSV! '
+                  f'>>>\n {[a for a in e.args]}\n<<<')

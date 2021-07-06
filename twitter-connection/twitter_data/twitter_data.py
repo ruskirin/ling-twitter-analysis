@@ -22,14 +22,15 @@ class TwitterData:
     def append(self, other):
         assert isinstance(other, type(self)), 'Cannot append data!'
 
-    def to_csv(self, prefix, lang, verb):
-        try:
-            print(self.original.shape[0])
+    def save_csv(self, prefix, lang, topic, num):
+        print(self.original.shape[0])
 
-            path = f'{prefix}/{lang}-{verb.upper()}-{self.__class__.__name__}-{self.original.shape[0]}.csv'
-            print(path)
+        path = f'{prefix}/{lang}' \
+               f'-{topic.upper()}' \
+               f'-original' \
+               f'-{self.__class__.__name__.lower()}' \
+               f'-{self.original.shape[0]}' \
+               f'-{num}.csv'
+        print(path)
 
-            self.original.to_csv(path, sep='~', index=False)
-        except Exception as e:
-            print(f'Problems saving data to CSV! '
-                  f'>>>\n {[a for a in e.args]}\n<<<')
+        self.original.to_csv(path, sep='~', index=False)

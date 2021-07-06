@@ -11,18 +11,22 @@ twit = imp.module_from_spec(spec)
 sys.modules[spec.name] = twit
 spec.loader.exec_module(twit)
 
-from twitter_data import tweet, users, places
+from twitter_data import tweets, users, places
 
 
 '''
 Module responsible for the GET responses made in connection.py
 '''
 class Response:
-    def __init__(self, response: dict=None):
-        self.schema = dict()
+    def __init__(self, lang, topic, response = None):
+        self.lang = lang
+        self.topic = topic
 
+        self.schema = dict()
         if response is not None:
             self.generate_tables(response)
+
+        self.pulls = 0
 
     # Recursive method to expand @response and fill @self.tables with DataFrames
     def generate_tables(self, response):
@@ -31,7 +35,7 @@ class Response:
                 self.schema['meta'] = table[1]
                 continue
             elif table[0]=='data':
-                self.schema['data'] = tweet.Tweet(table[1])
+                self.schema['data'] = tweets.Tweets(table[1])
                 continue
             elif table[0]=='users':
                 self.schema['users'] = users.Users(table[1])
@@ -86,36 +90,24 @@ class Response:
 
             table[1].reset_index(drop=True, inplace=True)
 
-    def to_csv(self, lang, time, verb, is_test=False):
-        make_dir(time, lang, is_test)
-
-        prefix = f'{"test" if is_test else "saved"}/{lang}/{time}'
-
-        data = dict()
-
-        # try:
-        #     a = self.schema['data'].merge(
-        #             self.schema['places'].loc[:, ['place_id', 'location']],
-        #             how='left',
-        #             on='place_id')
-        #     data = a.merge(self.schema['users'].loc[:, ['author_id', 'user_location']],
-        #                how='left',
-        #                on='author_id')
-        #
-        #     dups = data.loc[data.duplicated('tweet_id'), :].index
-        #     data.drop(dups, inplace=True)
-        #
-        # except Exception as e:
-        #     print(f'Exception during merge for CSV! \n>>> {[a for a in e.args]}')
+    def save_csv(self, time, is_test=False):
+        make_dir(time, self.lang, is_test)
+        prefix = f'{"test" if is_test else "saved"}/{self.lang}/{time}'
 
         try:
             for table in self.schema.items():
                 if table[0]=='meta':
                     continue
 
-                table[1].to_csv(prefix, lang, verb)
+                if isinstance(table[1], tweets.twitter_data.TwitterData):
+                    table[1].save_csv(
+                        prefix, lang=self.lang, topic=self.topic, num=self.pulls)
+
         except Exception as e:
-            print(f'Exception while saving to CSV! >>>\n {[a for a in e.args]}\n<<<')
+            print(f'Exception while saving to CSV! '
+                  f'>>>\n {e.args} \n<<<')
+        finally:
+            self.pulls+=1
 
 
 def save_json(path, data):
