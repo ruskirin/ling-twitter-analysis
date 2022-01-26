@@ -1,11 +1,11 @@
-twitter-connection/credentials.txt
-
-ambiguo/
-
 .ipynb_checkpoints
 
-*.txt
+credentials.yml
 
-*.csv
+data/*
+!data/.gitkeep
 
-saved/
+logs/*
+!logs/.gitkeep
+
+__pycache__

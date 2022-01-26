@@ -1,0 +1,15 @@
+---
+# Found that these parameters almost never change
+query_fields:
+  conditions: 'has:geo -is:retweet -has:links'
+  tweet: 'tweet.fields=lang,geo,created_at,public_metrics,referenced_tweets'
+  expansions: 'expansions=author_id,geo.place_id,entities.mentions.username'
+  user: 'user.fields=created_at,location,public_metrics'
+  place: 'place.fields=country'
+  # 100 is the maximum allowable
+  max_results: 'max_results=100'
+
+paths:
+  query_search:
+    prefix_recent: 'https://api.twitter.com/2/tweets/search/recent?query'
+    prefix_archive: 'https://api.twitter.com/2/tweets/search/all?query'

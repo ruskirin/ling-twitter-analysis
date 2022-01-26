@@ -1,0 +1,37 @@
+---
+spacy:
+  es: 'es_dep_news_trf'
+  pt: 'pt_core_news_lg'
+  pipeline:
+    disable:
+      - ner
+col_order:
+  - tweet_id
+  - verbs
+  - text_orig
+  - text_norm
+  - dependencies
+  - lemma_pos_stopword
+  - retweet_reply_like_quote
+  - created_at
+  - user_id
+  - tweet_place_id
+  - mentions
+  - referenced_tweets
+analysis_cols:
+  - tweet_id
+  - verbs
+  - text_orig
+  - text_norm
+  - dependencies
+  - lemma_pos_stopword
+metadata_cols:
+  - tweet_id
+  - created_at
+  - retweet_reply_like_quote
+  - user_id
+  - tweet_place_id
+  - mentions
+  - referenced_tweets
+regex_pats:
+  que: 

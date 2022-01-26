@@ -1,0 +1,50 @@
+---
+version: 1
+formatters:
+  def:
+    style: '{'
+    format: '{asctime} {name}.{funcName}-{levelname}:: *** {message} ***' 
+    datefmt: '(%Y-%m-%d %H:%M:%S.%f)'
+handlers:
+  console_handler:
+    class: logging.StreamHandler
+    formatter: def
+    level: WARNING
+  detail_handler:
+    class: logging.FileHandler
+    formatter: def
+    filename: './logs/detail_log.txt'
+    level: DEBUG
+    mode: 'w'
+  progress_handler:
+    class: logging.FileHandler
+    formatter: def
+    filename: './logs/progress_log.txt'
+    level: INFO
+    mode: 'w'
+loggers:
+    default:
+      handlers: [console_handler, detail_handler, progress_handler]
+      level: DEBUG
+      propagate: False
+    connection:
+      handlers: [console_handler, detail_handler, progress_handler]
+      level: DEBUG
+      propagate: False
+    utils:
+      handlers: [console_handler, detail_handler, progress_handler]
+      level: DEBUG
+      propagate: False
+    cleaning:
+      handlers: [console_handler, detail_handler, progress_handler]
+      level: DEBUG
+      propagate: False
+    processing:
+      handlers: [console_handler, detail_handler, progress_handler]
+      level: DEBUG
+      propagate: False
+      
+root:
+  level: DEBUG
+  handlers: [console_handler, detail_handler, progress_handler]
+  disable_existing_loggers: False

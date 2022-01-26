@@ -1,0 +1,40 @@
+conjug_pat: es-([()\"A-Z\s]+)-.+-([\d]+).csv
+
+twitter:
+    clean:
+      drop_cols:
+      - geo.coordinates.type
+      - geo.coordinates.coordinates
+      - public_metrics.retweet_count
+      - public_metrics.reply_count
+      - public_metrics.like_count
+      - public_metrics.quote_count
+      tweet_combine_col_map:
+        retweet_reply_like_quote:
+        - public_metrics.retweet_count
+        - public_metrics.reply_count
+        - public_metrics.like_count
+        - public_metrics.quote_count
+      users_combine_col_map:
+        followers_following_tweet_listed:
+        - public_metrics.followers_count
+        - public_metrics.following_count
+        - public_metrics.tweet_count
+        - public_metrics.listed_count
+    col_dtypes:
+      author_id: int
+      created_at: datetime
+      tweet_id: int
+    flags:
+      clean_dups: false
+      clean_meta: false
+      clean_places: false
+      clean_table: false
+      clean_users: false
+      merge_data: false
+      separate_by_verb: false
+    verb_pat: es-(?P<keyword>[()\"a-zA-Z\s]+)-
+
+corpes:
+    verb_pat: \b(?P<keyword>[()\"a-zA-Z\s]+)-
+    flags:

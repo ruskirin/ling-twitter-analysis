@@ -1,0 +1,72 @@
+---
+file_paths:
+  # Paths from project root 
+  verb_conjug: 'data/ES-verbs-conjugations.xlsx'
+  credentials: 'src/twitter_connection/credentials.yml'
+formats:
+  date: '%Y-%m-%d'
+  time: '%H:%M:%S'
+dtypes:
+  twitter:
+    regular:
+      tweet_id: float
+      verbs: string
+      text_orig: string
+      text_norm: string
+      dependencies: string
+      lemma_pos_stopword: string
+      retweet_reply_like_quote: string
+      user_id: string
+      tweet_place_id: string
+      mentions: string
+      referenced_tweets: string
+    # For when above yields error because of bad fields, better to
+    #   just specify numeric fields as 'object' than allow to 
+    #   predict type
+    error:
+      tweet_id: string
+      verbs: string
+      text_orig: string
+      text_norm: string
+      dependencies: string
+      lemma_pos_stopword: string
+      retweet_reply_like_quote: string
+      user_id: string
+      tweet_place_id: string
+      mentions: string
+      referenced_tweets: string
+    dates:
+      - created_at
+  corpes:
+    regular:
+      BIBLIOGRAFÍA: string
+      AUTOR: string
+      TITULO: string
+      FECHA: object
+      CRITERIO: string
+      BLOQUE: string
+      MEDIO: string
+      SOPORTE: string
+      TEMA: string
+      PAÍS: string
+      ZONA: object
+      TIPOLOGÍA: string
+      NOTAS: string
+      CONCORDANCIA: string
+    error:
+      BIBLIOGRAFÍA: string
+      AUTOR: string
+      TITULO: string
+      FECHA: string
+      CRITERIO: string
+      BLOQUE: string
+      MEDIO: string
+      SOPORTE: string
+      TEMA: string
+      PAÍS: string
+      ZONA: object
+      TIPOLOGÍA: string
+      NOTAS: string
+      CONCORDANCIA: string
+      
+      

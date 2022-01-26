@@ -1,0 +1,17 @@
+---
+formatters:
+  def:
+    style: '{'
+    format: '{asctime} {name}.{funcName}-{levelname}:: *** {message} ***' 
+    datefmt: '(%Y-%m-%d %H:%M:%S.%f)'
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: def
+    level: WARNING
+  detail:
+    filename: '{}-DETAIL-{}.log'
+    level: DEBUG
+  progress:
+    filename: '{}-PROG-{}.log'
+    level: INFO

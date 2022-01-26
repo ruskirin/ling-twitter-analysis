@@ -1,0 +1,1 @@
+12/30: After the 12/6 meeting where decided on specific formatting of normd text (lower case except for VOI). Will also be adding column for a hyperlink to the online displaCy displayer
