@@ -61,10 +61,25 @@ def get_save_path(save_dir: str,
     return data_path/lang
 
 
-def make_dir(dir_path, file_name=None):
+def make_dir(dir_path,
+             name_scheme,
+             date: str = None) -> Path:
+    """
+    Create a new directory in @dir_path
+
+    :param dir_path: path to directory in which to make another folder
+    :param name_scheme: name for the new directory
+    :param date: if not None, place new directory inside a folder named as
+      datetime string
+    :return: Path object to new directory
+    """
+    if not dir_path.is_dir():
+        raise NotADirectoryError('@dir_path must be a directory')
+    if date is not None:
+        name_scheme = f'{date}/{name_scheme}'
+
     try:
-        path = Path(f'{dir_path}'
-                    f'{f"/{file_name}" if file_name is not None else ""}')
+        path = Path(f'{dir_path}/{name_scheme}')
         path.mkdir(parents=True, exist_ok=True)
 
         return path
@@ -297,9 +312,9 @@ def get_logger(op,
         console_hand.setFormatter(formatter)
 
         # Logs partitioned by date; create directory (if doesn't exist)
-        log_dir = dt.strftime("%Y-%m-%d")
-        log_path = get_project_root()/'logs'/log_dir
-        make_dir(log_path)
+        log_dir = get_str_datetime_now(True, False)
+        log_path = get_project_root()/'logs'
+        make_dir(log_path, log_dir)
 
         # Detail handler; records DEBUG and up
         dh = conf['handlers']['detail']

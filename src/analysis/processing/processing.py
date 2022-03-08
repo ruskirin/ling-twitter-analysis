@@ -57,11 +57,11 @@ def save_by_verb(df: pd.DataFrame,
 
         verb_df = df[has_verb].copy()
 
-        path = save_path/vtype
-
         logging.debug(f'Saving {verb_df.shape[0]} entries of ({verb})')
 
-        utils.make_dir(path)
+        utils.make_dir(save_path, vtype)
+
+        path = save_path/vtype
 
         if save_file_type=='csv':
             utils.save_csv(path, verb_df, f'{save_from}-es-{verb}-{time}')

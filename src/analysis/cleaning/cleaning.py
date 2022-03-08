@@ -30,7 +30,7 @@ def folder_dup_clean(
 
     """
     Find and remove all duplicate entries from CSV files in specified folder.
-    Targeted filed must have a standardized name schema.
+    Targeted files must have a standardized name schema.
 
     :param cleaned: already processed/cleaned folders
     :param path: folder path as a Path object
