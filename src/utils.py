@@ -7,6 +7,8 @@ from datetime import datetime
 from pathlib import Path
 from numpy import array_split
 from pandas import read_csv, DataFrame
+from numpy import ceil
+from pandas.errors import ParserError # Custom error
 
 
 def get_project_root() -> Path:
@@ -129,22 +131,21 @@ def get_csv(
                         parse_dates=dates,
                         lineterminator=lineterminator,
                         on_bad_lines='warn')
+    except ParserError:
+        data = read_csv(path,
+                        sep=sep,
+                        dtype=dtypes,
+                        parse_dates=dates,
+                        lineterminator='\n',
+                        engine='python',
+                        on_bad_lines='error')
     except TypeError:
         data = read_csv(path,
                         sep=sep,
                         dtype=dtypes,
                         parse_dates=dates,
                         lineterminator=lineterminator,
-                        error_bad_lines=False,
-                        warn_bad_lines=True)
-    except ParserError:
-        data = read_csv(path,
-                        sep=sep,
-                        dtype=dtypes,
-                        parse_dates=dates,
-                        lineterminator=lineterminator,
-                        error_bad_lines=False,
-                        warn_bad_lines=True,
+                        on_bad_lines='warn',
                         engine='python')
     except Exception as e:
         logging.debug(f'Exception while reading CSV: '
@@ -157,15 +158,19 @@ def get_csv(
                         sep=sep,
                         dtype=err_dtypes,
                         parse_dates=dates,
-                        lineterminator=lineterminator)
+                        lineterminator=lineterminator,
+                        on_bad_lines='warn',
+                        engine='python')
 
-        logging.debug(f'Read {data.shape[0]} tweets; removing null entries')
+        # TODO: keep track of bad lines and record them
 
-        bad_text = data['text_norm'].isna()
-        data = data.drop(data[bad_text].index).reset_index(drop=True)
+        # logging.debug(f'Read {data.shape[0]} tweets; removing null entries')
 
-        logging.debug(f'Found {bad_text.sum()} bad text entries. Returning '
-                      f'remaining {data.shape[0]}.')
+        # bad_text = data['normalized'].isna()
+        # data = data.drop(data[bad_text].index).reset_index(drop=True)
+        #
+        # logging.debug(f'Found {bad_text.sum()} bad text entries. Returning '
+        #               f'remaining {data.shape[0]}.')
 
     return data
 
@@ -189,17 +194,17 @@ def save_csv(
     """
     try:
         if not batch:
-            name = name_scheme
+            name = f'{name_scheme}-{df.shape[0]}'
             if '.csv' not in name_scheme:
                 name = name + '.csv'
 
             df.to_csv(path / name, sep=file_sep, index=False)
             logging.info(f'Saved dataframe ({name_scheme}) CSV into: {path}')
         else:
-            bins = int(df.shape[0] / batch_size)
+            bins = ceil(df.shape[0] / batch_size)
             # Split into batches of approximately the specified batch size
             for i, b in enumerate(array_split(df, bins)):
-                name = f'{name_scheme}_{i}.csv'
+                name = f'{name_scheme}-{i}-{b.shape[0]}.csv'
                 b.to_csv(path / name, sep=file_sep, index=False)
 
             logging.info(f'Saved {bins} files into: {path}')
@@ -223,10 +228,10 @@ def save_excel(
             df.to_excel(path / name, index=False)
             logging.info(f'Saved dataframe ({name_scheme}) xlsx into: {path}')
         else:
-            bins = int(df.shape[0] / batch_size)
+            bins = ceil(df.shape[0] / batch_size)
             # Split into batches of approximately the specified batch size
             for i, b in enumerate(array_split(df, bins)):
-                name = f'{name_scheme}_{i}.xlsx'
+                name = f'{name_scheme}-{i}-{b.shape[0]}.xlsx'
                 b.to_excel(path / name, index=False)
 
             logging.info(f'Saved {bins} files into: {path}')

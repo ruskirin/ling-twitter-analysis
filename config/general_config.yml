@@ -24,7 +24,7 @@ dtypes:
     #   just specify numeric fields as 'object' than allow to 
     #   predict type
     error:
-      tweet_id: string
+      tweet_id: object
       verbs: string
       text_orig: string
       text_norm: string

@@ -15,11 +15,15 @@ spec_src.loader.exec_module(m)
 from src import utils
 
 
+# def merge_batches()
+
+
 def save_by_verb(df: pd.DataFrame,
                  save_from: str,
                  verb_conjug_path: Path,
                  save_path: Path,
-                 save_file_type: str = 'csv') -> bool:
+                 save_file_type: str = 'csv',
+                 batch_size=-1) -> bool:
     # TODO: hardcode verb_conjug_path as it is specific to proejct
     # TODO: add option for language
 
@@ -31,6 +35,7 @@ def save_by_verb(df: pd.DataFrame,
     :param verb_conjug_path: path to excel file with verb conjugations
     :param save_path: location to save data
     :param save_file_type: format to save data in -- one of 'csv' or 'excel'
+    :param batch_size: (optional) specify batch size to save in batches
     :return: save successful (bool)
     """
     if save_from not in ['twitter', 'corpes']:
@@ -40,7 +45,8 @@ def save_by_verb(df: pd.DataFrame,
         raise ValueError('Invalid input for save_file_type; must be one of '
                          '["csv", "excel"]')
 
-    time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    # Used in filename
+    # time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     logging.info(f'Starting save of {df.shape[0]} entries into {save_path}')
 
@@ -64,6 +70,18 @@ def save_by_verb(df: pd.DataFrame,
         path = save_path/vtype
 
         if save_file_type=='csv':
-            utils.save_csv(path, verb_df, f'{save_from}-es-{verb}-{time}')
+            utils.save_csv(
+                path,
+                verb_df,
+                f'{save_from}-es-{verb}',
+                batch=True if batch_size != -1 else False,
+                batch_size=batch_size
+            )
         else:
-            utils.save_excel(path, verb_df, f'{save_from}-es-{verb}-{time}')
+            utils.save_excel(
+                path,
+                verb_df,
+                f'{save_from}-es-{verb}',
+                batch=True if batch_size != -1 else False,
+                batch_size=batch_size
+            )
