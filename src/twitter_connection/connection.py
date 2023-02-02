@@ -1,10 +1,10 @@
 import requests
 import logging
-from logging import config
+from logging import config as log_conf
+from decouple import config as env_conf
 import yaml
 from time import sleep
 import response as tr
-import importlib
 import importlib.util as imp
 import sys
 
@@ -21,31 +21,21 @@ from src import utils
 class TwitterConnection:
     """
     :param lang: specify language of connection
-    :param bearer_path: key name for desired token to be found in credentials yaml;
-      use '/' separation for nested entries
+    :param username: name of API key; formatted as "<username>_key: <key>" in
+      an environ
     :param is_archive: is this a 'Full-Archive Search'? If not, then is 'Recent Search'
     """
     def __init__(self,
                  lang: str,
-                 bearer_path: str,
-                 is_archive: bool = False):
+                 is_archive: bool = False,
+                 key: str = None,
+                 key_name: str = None):
 
         self.lang = lang
-        self.bearer_path = bearer_path
         self.is_archive: bool = is_archive
 
         self.gen_conf = utils.get_config()
         self.conf = utils.get_config('conn')
-        self.credentials = dict()
-
-        try:
-            with open(utils.get_project_root()/
-                      self.gen_conf["file_paths"]["credentials"], 'r') as cred_file:
-                self.credentials = yaml.safe_load(cred_file)
-
-        except Exception as e:
-            logging.exception(f'Exception reading in .yml: '
-                                  f'\n{e.args}')
 
         self.header = self.create_headers()
 
@@ -57,29 +47,35 @@ class TwitterConnection:
 
         self.pages = 0
 
-    # If raw token was passed during object creation, use that
-    #   else look for a token in @cred_path
-    def auth(self):
+    def auth(self, key, env_key_name):
+        """
+        TODO: any verification would go here, none is performed as yet
+        Verify passed API key
+        :param key: (optional) API key in string format
+        :param env_key_name: (optional) API key inside a .env variable inside
+          the */twitter_connection/ directory
+        :return: verified key
+        """
         try:
-            assert len(self.credentials)>0
+            if key is None and env_key_name is None:
+                raise AssertionError('Neither a key nor a key name for local '
+                                     'environment variable were passed')
 
-            token = None
-            for i, path in enumerate(self.bearer_path.split('/')):
-                if i==0:
-                    token = self.credentials[path]
-                else:
-                    token = token[path]
+            token = key if key is not None else env_conf(env_key_name)
 
-            logging.debug(f'Authorizing connection, token: {token}')
+            logging.debug(f'Authorizing connection: '
+                          f'{"direct key" if key is not None else env_key_name}')
 
             return token
 
-        except AssertionError:
-            logging.exception('Failed to read in credentials')
+        except UndefinedValueError as env_e:
+            logging.exception(f'The passed key name was not found: {env_e.args}')
+        except AssertionError as e:
+            logging.exception(f'Failed to read in credentials: {e.args}')
 
     # Get proper format for bearer token
-    def create_headers(self):
-        return {'Authorization': f'Bearer {self.auth()}'}
+    def create_headers(self, key=None, env_key_name=None):
+        return {'Authorization': f'Bearer {self.auth(key, env_key_name)}'}
 
     # Combine query, fields and (if available) next_token into a proper URL
     def create_url(self, topic, next_token=None):
