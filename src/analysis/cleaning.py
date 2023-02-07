@@ -9,7 +9,8 @@ import sys
 
 spec_src = imp.spec_from_file_location(
     'src',
-    '../../__init__.py')
+    '../__init__.py'
+)
 m = imp.module_from_spec(spec_src)
 sys.modules[spec_src.name] = m
 spec_src.loader.exec_module(m)

@@ -1,17 +1,24 @@
 ---
+version: 1
+disable_existing_loggers: true
 formatters:
   def:
     style: '{'
-    format: '{asctime} {name}.{funcName}-{levelname}:: *** {message} ***' 
-    datefmt: '(%Y-%m-%d %H:%M:%S.%f)'
+    format: '{asctime} ({name}.{funcName}) ::{levelname}:: *** {message} ***' 
+    datefmt: '[%Y-%m-%d %H:%M:%S]'
 handlers:
   console:
     class: logging.StreamHandler
     formatter: def
     level: WARNING
+    stream: ext://sys.stdout
   detail:
+    class: logging.FileHandler
     filename: '{}-DETAIL-{}.log'
+    formatter: def
     level: DEBUG
   progress:
+    class: logging.FileHandler
     filename: '{}-PROG-{}.log'
+    formatter: def
     level: INFO

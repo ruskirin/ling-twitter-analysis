@@ -8,6 +8,7 @@ dependencies:
   - python=3.10
   - notebook
   - numpy
+  - unidecode
   - scipy
   - matplotlib
   - pandas
@@ -22,3 +23,4 @@ dependencies:
   - pip
   - pip:
     - spacy-lookups-data
+    - ipyparams

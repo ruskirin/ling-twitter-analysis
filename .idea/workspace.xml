@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="28a4ad1d-c401-42ea-ad76-8f8aff8e60d4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/config/log_config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/log_config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/que_drop.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/que_drop.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/cleaning/cleaning.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/cleaning.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/cleaning/corpes-cleaning.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/corpes-cleaning.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/cleaning/twitter-cleaning.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/twitter-cleaning.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/processing/20220107-change-text-norm.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/20220107-change-text-norm.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/processing/clitic-climbing-analysis.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/clitic-climbing-analysis.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/processing/corpes-processing.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/corpes-processing.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/processing/displacy-rendering.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/displacy-rendering.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/processing/processing.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/processing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/processing/twitter-analysis.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/twitter-analysis.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/processing/twitter-text-process.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/twitter-text-process.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_connection/connection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/connection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_connection/cuda-wsl-ubuntu.pin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_connection/response.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/response.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter-extracting.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter-extracting.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/twitter_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter_data/twitter_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/utils.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2E2YZNoAT5icQtcvMqay3Ny1G4L" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/rimov/Documents/Code/Web/ling2021-que-drop&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/analysis/.ipynb_checkpoints" />
+      <recent name="$PROJECT_DIR$/src/analysis" />
+      <recent name="$PROJECT_DIR$/src/utils" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="utils" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="lin-que-dropping" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/utils/utils.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.utils" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="28a4ad1d-c401-42ea-ad76-8f8aff8e60d4" name="Changes" comment="" />
+      <created>1661795200731</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1661795200731</updated>
+      <workItem from="1661795201938" duration="729000" />
+      <workItem from="1662121500886" duration="14000" />
+      <workItem from="1662131144276" duration="64000" />
+      <workItem from="1662135800092" duration="6000" />
+      <workItem from="1666185624284" duration="1646000" />
+      <workItem from="1668430239889" duration="1182000" />
+      <workItem from="1675431641285" duration="2511000" />
+      <workItem from="1675435180294" duration="17069000" />
+      <workItem from="1675695934904" duration="9958000" />
+      <workItem from="1675719747885" duration="5685000" />
+      <workItem from="1675780601903" duration="11231000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/lin_que_dropping$utils.coverage" NAME="utils Coverage Results" MODIFIED="1675792962148" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+  </component>
+</project>

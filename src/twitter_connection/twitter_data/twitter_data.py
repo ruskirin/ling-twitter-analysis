@@ -1,19 +1,10 @@
 import logging
-import regex
+import regex as re
 import pandas as pd
-import importlib.util as imp
-import sys
+from utils import get_config, save_csv
 
-spec_src = imp.spec_from_file_location(
-    'src', '../__init__.py')
-m = imp.module_from_spec(spec_src)
-sys.modules[spec_src.name] = m
-spec_src.loader.exec_module(m)
-
-from src import utils
-
-conf = utils.get_config('e')
-gen_conf = utils.get_config()
+conf = get_config('e')
+gen_conf = get_config()
 
 
 class TwitterData:
@@ -37,7 +28,7 @@ class TwitterData:
                f'-{self.data.shape[0]}' \
                f'-{num}.csv'
 
-        utils.save_csv(path, self.data, name_scheme)
+        save_csv(path, self.data, name_scheme)
 
     def remove_dups(self, subset: str):
         logging.debug(f'Removing duplicates; '

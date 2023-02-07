@@ -1,14 +1,15 @@
-import os
-import logging
-from logging import config
+import logging.config
 import yaml
-import re
+import regex as re
 from datetime import datetime
 from pathlib import Path
 from numpy import array_split
 from pandas import read_csv, DataFrame
 from numpy import ceil
 from pandas.errors import ParserError # Custom error
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_project_root() -> Path:
@@ -99,7 +100,7 @@ def get_csv(
         sep='~',
         lineterminator=None):
 
-    # TODO: FIX
+    # TODO: DOES NOT WORK (RUN AND SEE)
 
     """
     Optimized version utilizing pandas.read_csv() with dtypes specified
@@ -254,15 +255,16 @@ def save_readme(location, text, append=True):
 
 def get_str_datetime_now(date: bool=True, time: bool=True):
     """
-    Get datetime at time of this function's call. Format used is defined in
-      the general config. Will return None if both date and time are false
+    Get datetime at time of this function's call; used for directory and file
+    naming. Format used is defined in the general config. Will return None if
+    both date and time are false
+
     :param date: include date?
     :param time: include time?
     :return: datetime string representation
     """
     conf = get_config()
 
-    fmt = ""
     if date and time:
         fmt = f'{conf["formats"]["date"]} {conf["formats"]["time"]}'
     elif date and (not time):
@@ -275,35 +277,39 @@ def get_str_datetime_now(date: bool=True, time: bool=True):
     return datetime.now().strftime(fmt)
 
 
-def get_logger(op,
-               dt: datetime = datetime.now(),
-               desc="",
-               append=False):
+def setup_logger(file_name: str, desc: str = '', append=False):
     """
-    Create and configure a logger with 3 handlers: console, detail, and progress
-    Logs saved to .../lin-que-dropping/logs/
+    Create and configure the root logger with 3 handlers: console, detail,
+      and progress. Logs saved to .../lin-que-dropping/logs/ .
 
-    :param op: operation being logged; used as part of log filename so keep short
-    :param dt: (optional) datetime of log; must include the full time
-      (year, month, day, hour, min, sec). Defaults to datetime.now()
-    :param desc: (optional) readme description of log
+    :param file_name: short name to describe session (used in log file names)
+    :param desc: readme description of log
     :param append: append to existing log if exists?
-    :return: logger
+    :return: Nothing -- loggers are singletons and can be accessed using
+      logging.getLogger(logger_name)
     """
 
     try:
+        time = datetime.now()
+        # Logs partitioned by date; create directory (if it doesn't exist)
+        dir_name = get_str_datetime_now(True, False)
+        log_dir_path = get_project_root() / 'logs'
+        log_path = make_dir(log_dir_path, dir_name)
+
         conf = get_config('l')
         logger = logging.getLogger()
+
+        if logger.hasHandlers():
+            # logger already exists
+            print('Root logger has handlers')
+            return None
+
         logger.setLevel(logging.DEBUG)
         logger.propagate = False
 
         # Remove existing handlers (found they stuck between sessions)
         while logger.hasHandlers():
             logger.removeHandler(logger.handlers[0])
-
-        # When no year specified, year defaults to 1900
-        if dt.year==1900:
-            raise ValueError(f'Passed datetime ({dt}) is missing a date')
 
         f = conf['formatters']['def']
         formatter = logging.Formatter(style=f['style'],
@@ -316,33 +322,36 @@ def get_logger(op,
         console_hand.setLevel(ch['level'])
         console_hand.setFormatter(formatter)
 
-        # Logs partitioned by date; create directory (if doesn't exist)
-        log_dir = get_str_datetime_now(True, False)
-        log_path = get_project_root()/'logs'
-        make_dir(log_path, log_dir)
-
         # Detail handler; records DEBUG and up
         dh = conf['handlers']['detail']
-        detail_name = dh['filename'].format(dt.strftime("%H%M%S"), op)
-        detail_hand = logging.FileHandler(filename=str(log_path/detail_name),
-                                          mode='a' if append else 'w')
+        dh_name = log_path/dh['filename'].format(
+            time.strftime("%H:%M:%S"), file_name
+        )
+        detail_hand = logging.FileHandler(
+            filename=dh_name.as_posix(),
+            mode='a' if append else 'w'
+        )
         detail_hand.setLevel(dh['level'])
         detail_hand.setFormatter(formatter)
         logger.addHandler(detail_hand)
 
         # Progress handler; records INFO and up
         ih = conf['handlers']['progress']
-        prog_name = ih['filename'].format(dt.strftime("%H%M%S"), op)
-        prog_hand = logging.FileHandler(filename=str(log_path/prog_name),
-                                        mode='a' if append else 'w')
+        ih_name = log_path/ih['filename'].format(
+            time.strftime("%H:%M:%S"), file_name
+        )
+        prog_hand = logging.FileHandler(
+            filename=ih_name.as_posix(),
+            mode='a' if append else 'w'
+        )
         prog_hand.setLevel(ih['level'])
         prog_hand.setFormatter(formatter)
         logger.addHandler(prog_hand)
 
         # Update log README
-        save_readme(log_path, f'{detail_name}: {desc}')
+        save_readme(log_path, f'***** {dh_name.stem} *****'
+                              f'\n{desc}')
 
-        return logger
     except Exception as e:
         print(f'Error getting logger! \n{e.args}')
         return None
@@ -355,7 +364,7 @@ def get_config(conf_type='g',
     :param conf_type: choice of 'g, l, e, c, p'
       for 'general, log, extraction, cleaning, processing' configurations files
       (default: 'g')
-    :param path: (optional) path to config
+    :param path: (optional) direct path to config
     """
     types = {'g': 'general',
              'conn': 'connection',
@@ -367,13 +376,13 @@ def get_config(conf_type='g',
     try:
         if path is not None:
             with open(path, 'r') as f:
-                logging.info(f'Opened config file at: {path}')
+                logger.info(f'Opened config file: {path.stem}')
                 return yaml.safe_load(f)
 
         config_path = get_project_root()/'config'/f'{types[conf_type]}_config.yml'
 
         with open(config_path, 'r') as f:
-            logging.info(f'Opened config file at: {config_path}')
+            logger.info(f'Opened config file: {config_path.stem}')
             return yaml.safe_load(f)
 
     except Exception as e:
@@ -415,3 +424,10 @@ def remove_empty_dirs(path: Path):
 
     logging.info(f'Removed empty directories in {str(path)}: \n{removed}')
     print(removed)
+
+
+if __name__ == '__main__':
+    setup_logger()
+    logger.info('Hey there beautiful!')
+    root = logging.getLogger()
+    root.info('Hello?')

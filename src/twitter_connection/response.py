@@ -1,15 +1,5 @@
 import json
 import logging
-import importlib.util as imp
-import sys
-
-# spec = imp.spec_from_file_location(
-#     'twitter_data',
-#     '../twitter_connection/twitter_data/__init__.py')
-# twit = imp.module_from_spec(spec)
-# sys.modules[spec.name] = twit
-# spec.loader.exec_module(twit)
-
 from twitter_data import twitter_data, tweets, users, places
 
 

@@ -1,21 +1,12 @@
 import requests
-import logging
-from logging import config as log_conf
-from decouple import config as env_conf
-import yaml
+from logging import getLogger
+from decouple import config, UndefinedValueError
 from time import sleep
-import response as tr
-import importlib.util as imp
-import sys
+import response
+from utils import get_config
 
-spec_src = imp.spec_from_file_location(
-    'src',
-    '../__init__.py')
-m = imp.module_from_spec(spec_src)
-sys.modules[spec_src.name] = m
-spec_src.loader.exec_module(m)
 
-from src import utils
+logger = getLogger(__name__)
 
 
 class TwitterConnection:
@@ -34,10 +25,10 @@ class TwitterConnection:
         self.lang = lang
         self.is_archive: bool = is_archive
 
-        self.gen_conf = utils.get_config()
-        self.conf = utils.get_config('conn')
+        self.gen_conf = get_config()
+        self.conf = get_config('conn')
 
-        self.header = self.create_headers()
+        self.header = self.create_headers(key, key_name)
 
         # Saved response from .connect()
         self.response = None
@@ -61,17 +52,17 @@ class TwitterConnection:
                 raise AssertionError('Neither a key nor a key name for local '
                                      'environment variable were passed')
 
-            token = key if key is not None else env_conf(env_key_name)
+            token = key if key is not None else config(env_key_name)
 
-            logging.debug(f'Authorizing connection: '
-                          f'{"direct key" if key is not None else env_key_name}')
+            logger.debug(f'Authorizing connection: '
+                         f'{"direct key" if key is not None else env_key_name}')
 
             return token
 
         except UndefinedValueError as env_e:
-            logging.exception(f'The passed key name was not found: {env_e.args}')
+            logger.exception(f'The passed key name was not found: {env_e.args}')
         except AssertionError as e:
-            logging.exception(f'Failed to read in credentials: {e.args}')
+            logger.exception(f'Failed to read in credentials: {e.args}')
 
     # Get proper format for bearer token
     def create_headers(self, key=None, env_key_name=None):
@@ -121,13 +112,13 @@ class TwitterConnection:
         :param sleep_sec: time (seconds) between consecutive queries
         """
 
-        logging.info(f'Starting pagination of: {topic[0]}'
+        logger.info(f'Starting pagination of: {topic[0]}'
                      f'\nPagination save path: {save_path}')
 
         self.pages = 0
 
         data = self.connect(topic)
-        logging.debug(f'Initial connection established.')
+        logger.debug(f'Initial connection established.')
 
         while self.has_next and (self.pages < batch_num):
             sleep(sleep_sec)
@@ -140,16 +131,16 @@ class TwitterConnection:
 
             if (data.schema['data'].data.shape[0] >= batch_size) \
                     and self.has_next:
-                logging.debug(f'Saving batch.')
+                logger.debug(f'Saving batch.')
 
                 data.save_csv(self.pages, save_path)
                 self.pages+=1
 
-                logging.info(f'\tRetrieved {self.pages} pages')
+                logger.info(f'\tRetrieved {self.pages} pages')
 
-                data = tr.Response(self.lang, topic[0])
+                data = response.Response(self.lang, topic[0])
 
-        logging.info(f'\tPagination finished; retrieved {self.pages*batch_size} total pages')
+        logger.info(f'\tPagination finished; retrieved {self.pages*batch_size} total pages')
 
         data.save_csv(self.pages, save_path)
         return self.pages
@@ -165,44 +156,44 @@ class TwitterConnection:
         self.has_next = True
 
         url = self.create_url(query_topic[1], next_token)
-        logging.debug(f'URL: {url}')
+        logger.debug(f'URL: {url}')
 
         try:
             response = self._connect_to_endpoint(url, self.header)
 
-            self.response = tr.Response(self.lang,
-                                        query_topic[0],
-                                        response.json())
+            self.response = response.Response(
+                self.lang, query_topic[0], response.json()
+            )
             return self.response
 
         except ConnectionError as ce:
             if ce.args[0].status_code==429:
-                logging.exception(
+                logger.exception(
                     'Too many requests! Pausing for 5 seconds...')
                 sleep(5)
 
                 return self.connect(query_topic, next_token)
             else:
-                logging.exception(f'{ce.args[0].status_code}\n'
+                logger.exception(f'{ce.args[0].status_code}\n'
                                       f'{ce.args[0].text}')
 
         except AttributeError as ae:
-            logging.exception(f'Problem reading response attributes!'
+            logger.exception(f'Problem reading response attributes!'
                                   f'\n{ae.args}')
 
     def get_next_token(self):
         try:
             assert self.response is not None
         except AssertionError:
-            logging.exception(
+            logger.exception(
                 'self.response is None; did you try paginating without '
                 'making the initial connection?')
 
         next_token = self.response.get_next_token()
-        logging.debug(f'Next token: {next_token}')
+        logger.debug(f'Next token: {next_token}')
 
         if self.next_token==next_token:
-            logging.exception(f'Same pagination token returned')
+            logger.exception(f'Same pagination token returned')
 
         if next_token is None:
             self.has_next = False
@@ -219,3 +210,4 @@ class TwitterConnection:
             raise ConnectionError(response)
 
         return response
+
