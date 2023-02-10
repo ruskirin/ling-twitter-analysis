@@ -20,6 +20,7 @@ dependencies:
   - cupy
   - spacy-transformers
   - python-decouple
+  - openpyxl
   - pip
   - pip:
     - spacy-lookups-data

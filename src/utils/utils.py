@@ -3,13 +3,19 @@ import yaml
 import regex as re
 from datetime import datetime
 from pathlib import Path
-from numpy import array_split
-from pandas import read_csv, DataFrame
-from numpy import ceil
+from numpy import array_split, ceil
+from pandas import read_csv, read_excel, DataFrame
 from pandas.errors import ParserError # Custom error
 
 
 logger = logging.getLogger(__name__)
+
+
+def get_verb_conjugations() -> DataFrame:
+    conf = get_config('g')
+    p = get_project_root()/conf['file_paths']['verb_conjug']
+
+    return read_excel(p)
 
 
 def get_project_root() -> Path:
@@ -34,7 +40,7 @@ def get_project_root() -> Path:
 def get_save_path(save_dir: str,
                   save_from: str = '',
                   is_test: bool = False,
-                  lang: str = None):
+                  lang: str = 'es') -> Path:
     """
     Get filepath to the saved tweets
 
@@ -87,9 +93,9 @@ def make_dir(dir_path,
 
         return path
     except FileNotFoundError as fnf:
-        logging.exception(f'Cannot make directory -- invalid path: \n{fnf.args}')
+        logger.exception(f'Cannot make directory -- invalid path: \n{fnf.args}')
     except Exception as e:
-        logging.exception(f'Error while making directory! \n{e.args}')
+        logger.exception(f'Error while making directory! \n{e.args}')
 
 
 def get_csv(
@@ -100,7 +106,8 @@ def get_csv(
         sep='~',
         lineterminator=None):
 
-    # TODO: DOES NOT WORK (RUN AND SEE)
+    # TODO: attempting to optimize the function has resulted in it breaking
+    #   more often than not. Run and see the results
 
     """
     Optimized version utilizing pandas.read_csv() with dtypes specified
@@ -116,7 +123,7 @@ def get_csv(
 
     from_locs = {'twitter', 'corpes'}
     if data_from not in from_locs:
-        logging.exception(f'Wrong argument for "data_from": {data_from}'
+        logger.exception(f'Wrong argument for "data_from": {data_from}'
                           f'\nMust be one of: {from_locs}')
         return None
 
@@ -149,9 +156,9 @@ def get_csv(
                         on_bad_lines='warn',
                         engine='python')
     except Exception as e:
-        logging.debug(f'Exception while reading CSV: '
+        logger.debug(f'Exception while reading CSV: '
                       f'\n{e.args}')
-        logging.debug(f'\nReading using default dtypes')
+        logger.debug(f'\nReading using default dtypes')
 
         err_dtypes = conf['dtypes'][data_from]['error']
 
@@ -165,12 +172,12 @@ def get_csv(
 
         # TODO: keep track of bad lines and record them
 
-        # logging.debug(f'Read {data.shape[0]} tweets; removing null entries')
+        # logger.debug(f'Read {data.shape[0]} tweets; removing null entries')
 
         # bad_text = data['normalized'].isna()
         # data = data.drop(data[bad_text].index).reset_index(drop=True)
         #
-        # logging.debug(f'Found {bad_text.sum()} bad text entries. Returning '
+        # logger.debug(f'Found {bad_text.sum()} bad text entries. Returning '
         #               f'remaining {data.shape[0]}.')
 
     return data
@@ -200,7 +207,7 @@ def save_csv(
                 name = name + '.csv'
 
             df.to_csv(path / name, sep=file_sep, index=False)
-            logging.info(f'Saved dataframe ({name_scheme}) CSV into: {path}')
+            logger.info(f'Saved dataframe ({name_scheme}) CSV into: {path}')
         else:
             bins = ceil(df.shape[0] / batch_size)
             # Split into batches of approximately the specified batch size
@@ -208,9 +215,9 @@ def save_csv(
                 name = f'{name_scheme}-{i}-{b.shape[0]}.csv'
                 b.to_csv(path / name, sep=file_sep, index=False)
 
-            logging.info(f'Saved {bins} files into: {path}')
+            logger.info(f'Saved {bins} files into: {path}')
     except Exception as e:
-        logging.exception(e.args)
+        logger.exception(e.args)
         print(f'Problems saving data to CSV!')
 
 
@@ -227,7 +234,7 @@ def save_excel(
                 name = name + '.xlsx'
 
             df.to_excel(path / name, index=False)
-            logging.info(f'Saved dataframe ({name_scheme}) xlsx into: {path}')
+            logger.info(f'Saved dataframe ({name_scheme}) xlsx into: {path}')
         else:
             bins = ceil(df.shape[0] / batch_size)
             # Split into batches of approximately the specified batch size
@@ -235,9 +242,9 @@ def save_excel(
                 name = f'{name_scheme}-{i}-{b.shape[0]}.xlsx'
                 b.to_excel(path / name, index=False)
 
-            logging.info(f'Saved {bins} files into: {path}')
+            logger.info(f'Saved {bins} files into: {path}')
     except Exception as e:
-        logging.exception(e.args)
+        logger.exception(e.args)
         print(f'Problems saving data as .xlsx!')
 
 
@@ -266,7 +273,7 @@ def get_str_datetime_now(date: bool=True, time: bool=True):
     conf = get_config()
 
     if date and time:
-        fmt = f'{conf["formats"]["date"]} {conf["formats"]["time"]}'
+        fmt = f'{conf["formats"]["date"]}-at-{conf["formats"]["time"]}'
     elif date and (not time):
         fmt = f'{conf["formats"]["date"]}'
     elif (not date) and time:
@@ -286,7 +293,7 @@ def setup_logger(file_name: str, desc: str = '', append=False):
     :param desc: readme description of log
     :param append: append to existing log if exists?
     :return: Nothing -- loggers are singletons and can be accessed using
-      logging.getLogger(logger_name)
+      logger.getLogger(logger_name)
     """
 
     try:
@@ -386,7 +393,7 @@ def get_config(conf_type='g',
             return yaml.safe_load(f)
 
     except Exception as e:
-        logging.exception(f'Failed to open config file! {e.args}')
+        logger.exception(f'Failed to open config file! {e.args}')
 
 
 def get_updated_config(conf: dict, path: Path) -> dict:
@@ -400,10 +407,10 @@ def get_updated_config(conf: dict, path: Path) -> dict:
         return get_config(path=path)
 
     except Exception as e:
-        logging.exception(f'Failed to update config file!\n >>> {e.args} <<<')
+        logger.exception(f'Failed to update config file!\n >>> {e.args} <<<')
         return conf
     finally:
-        logging.info(f'Updated config file at: {path}')
+        logger.info(f'Updated config file at: {path}')
 
 
 def remove_empty_dirs(path: Path):
@@ -422,12 +429,9 @@ def remove_empty_dirs(path: Path):
             except OSError:
                 continue
 
-    logging.info(f'Removed empty directories in {str(path)}: \n{removed}')
+    logger.info(f'Removed empty directories in {str(path)}: \n{removed}')
     print(removed)
 
 
 if __name__ == '__main__':
-    setup_logger()
-    logger.info('Hey there beautiful!')
-    root = logging.getLogger()
-    root.info('Hello?')
+    print(get_verb_conjugations())

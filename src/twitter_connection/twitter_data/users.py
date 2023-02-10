@@ -22,8 +22,11 @@ class Users(twitter_data.TwitterData):
                 self.rename(twitter_data.conf['rename_maps']['users'])
 
             else:
-                self.data = self.data.append(
-                    other.data, ignore_index=True)
+                self.data = pd.concat(
+                    [self.data, other.data],
+                    axis=0,
+                    ignore_index=True
+                )
 
         except Exception as e:
             print(f'Failed to append data! {e.args[0]}')

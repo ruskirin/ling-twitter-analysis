@@ -2,7 +2,7 @@ import requests
 from logging import getLogger
 from decouple import config, UndefinedValueError
 from time import sleep
-import response
+from response import Response
 from utils import get_config
 
 
@@ -11,9 +11,11 @@ logger = getLogger(__name__)
 
 class TwitterConnection:
     """
+    Single connection to the twitter api
+
     :param lang: specify language of connection
-    :param username: name of API key; formatted as "<username>_key: <key>" in
-      an environ
+    :param username: name of API key; formatted as
+      "<uppercase_username>_KEY: <key>" in an environ
     :param is_archive: is this a 'Full-Archive Search'? If not, then is 'Recent Search'
     """
     def __init__(self,
@@ -23,12 +25,12 @@ class TwitterConnection:
                  key_name: str = None):
 
         self.lang = lang
-        self.is_archive: bool = is_archive
+        self.is_archive = is_archive
 
-        self.gen_conf = get_config()
         self.conf = get_config('conn')
 
         self.header = self.create_headers(key, key_name)
+        print(key_name)
 
         # Saved response from .connect()
         self.response = None
@@ -38,38 +40,17 @@ class TwitterConnection:
 
         self.pages = 0
 
-    def auth(self, key, env_key_name):
-        """
-        TODO: any verification would go here, none is performed as yet
-        Verify passed API key
-        :param key: (optional) API key in string format
-        :param env_key_name: (optional) API key inside a .env variable inside
-          the */twitter_connection/ directory
-        :return: verified key
-        """
-        try:
-            if key is None and env_key_name is None:
-                raise AssertionError('Neither a key nor a key name for local '
-                                     'environment variable were passed')
-
-            token = key if key is not None else config(env_key_name)
-
-            logger.debug(f'Authorizing connection: '
-                         f'{"direct key" if key is not None else env_key_name}')
-
-            return token
-
-        except UndefinedValueError as env_e:
-            logger.exception(f'The passed key name was not found: {env_e.args}')
-        except AssertionError as e:
-            logger.exception(f'Failed to read in credentials: {e.args}')
-
-    # Get proper format for bearer token
     def create_headers(self, key=None, env_key_name=None):
-        return {'Authorization': f'Bearer {self.auth(key, env_key_name)}'}
+        """Format the bearer token as requested"""
+        if env_key_name is not None:
+            env_key_name = env_key_name.upper() + '_KEY'
 
-    # Combine query, fields and (if available) next_token into a proper URL
+        return {'Authorization': f'Bearer {self._auth(key, env_key_name)}'}
+
     def create_url(self, topic, next_token=None):
+        """
+        Combine query, fields and (if available) next_token into a proper URL
+        """
         prefix = self.conf['paths']['query_search']\
             ['prefix_archive' if self.is_archive else 'prefix_recent']
         fields = self.conf['query_fields']
@@ -98,6 +79,10 @@ class TwitterConnection:
                  batch_size=1000,
                  batch_num=1,
                  sleep_sec=0):
+
+        # TODO: THE SAVING OF FILES IS DONE RETROACTIVELY -- NEW PULLS
+        #   ARE GETTING SAVED INTO PREVIOUSLY NAMED FILES, SO YOU GET MISMATCHED
+        #   FILENAMES AND PULLS
 
         """
         Make a series of .connect() calls until the desired @batch_size is reached
@@ -138,10 +123,11 @@ class TwitterConnection:
 
                 logger.info(f'\tRetrieved {self.pages} pages')
 
-                data = response.Response(self.lang, topic[0])
+                data = Response(self.lang, topic[0])
 
         logger.info(f'\tPagination finished; retrieved {self.pages*batch_size} total pages')
 
+        # Save last extracted batch
         data.save_csv(self.pages, save_path)
         return self.pages
 
@@ -152,6 +138,7 @@ class TwitterConnection:
         :param query_topic: just the TOPIC of your query -- fields and "rules" have already
           been set through .set_fields()
         :param next_token: token for next page
+        :return: response.Response object
         """
         self.has_next = True
 
@@ -161,7 +148,7 @@ class TwitterConnection:
         try:
             response = self._connect_to_endpoint(url, self.header)
 
-            self.response = response.Response(
+            self.response = Response(
                 self.lang, query_topic[0], response.json()
             )
             return self.response
@@ -202,8 +189,36 @@ class TwitterConnection:
 
         return next_token
 
+    def _auth(self, key, env_key_name):
+        """
+        TODO: any verification would go here, none is performed as yet
+        Verify passed API key
+        :param key: (optional) API key in string format
+        :param env_key_name: (optional) API key inside a .env variable inside
+          the */twitter_connection/ directory
+        :return: verified key
+        """
+        try:
+            if key is None and env_key_name is None:
+                raise AssertionError('Neither a key nor a key name for local '\
+                                     'environment variable were passed')
+
+            token = key if key is not None else config(env_key_name)
+            print(config.search_path)
+
+            logger.debug(f'Authorizing connection: '
+                         f'"{"direct key" if key is not None else env_key_name}"')
+
+            return token
+
+        except UndefinedValueError as env_e:
+            logger.exception(f'The passed key name was not found: {env_e.args}')
+        except AssertionError as e:
+            logger.exception(e.args)
+
     # Makes a get request and returns the response
     def _connect_to_endpoint(self, url, headers):
+        """Makes a get request and returns the response"""
         response = requests.request('GET', url, headers=headers)
 
         if response.status_code != 200:
@@ -211,3 +226,6 @@ class TwitterConnection:
 
         return response
 
+
+if __name__ == '__main__':
+    con = TwitterConnection('es', True, key_name='SECRET')

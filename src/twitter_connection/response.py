@@ -5,18 +5,28 @@ from twitter_data import twitter_data, tweets, users, places
 
 class Response:
     """
-    Module responsible for the GET responses made in connection.py
+    Object representing twitter api's query response
+
+    :param lang:
+    :param topic:
+    :param response:
     """
     def __init__(self, lang, topic, response = None):
         self.lang = lang
         self.topic = topic
-
+        # dict of various data extracted from query
         self.schema = dict()
         if response is not None:
             self.generate_tables(response)
 
-    # Recursive method to expand @response and fill @self.tables with DataFrames
     def generate_tables(self, response):
+        """
+        Recursive method to expand @response and fill @self.tables with
+          DataFrames
+
+        :param response:
+        :return:
+        """
         logging.debug(f'Generating tables from keys: {response.keys()}')
 
         for table in response.items():
@@ -36,9 +46,8 @@ class Response:
             if not isinstance(table[1], dict):
                 # If not a dictionary but a list, add as DataFrame.
                 #   Else add as a regular entry
-                self.schema[table[0]] = twitter_data.TwitterData.from_json(table[1])\
-                    if isinstance(table[1], list) \
-                    else table[1]
+                self.schema[table[0]] = twitter_data.TwitterData.from_json(
+                    table[1]) if isinstance(table[1], list) else table[1]
                 continue
 
             # Recursive call to expand subtable

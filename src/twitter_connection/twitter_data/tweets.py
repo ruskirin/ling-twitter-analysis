@@ -1,8 +1,7 @@
 import re
 import logging
 import pandas as pd
-import emoji
-
+from emoji import replace_emoji
 from unidecode import unidecode
 from twitter_data import twitter_data
 
@@ -29,21 +28,24 @@ class Tweets(twitter_data.TwitterData):
         t = re.sub(r'@[\w]+[\b ]*', '', tweet)
         t = re.sub(r'[\t]+|[\n]+', ' ', t)
         # Props to: https://stackoverflow.com/a/50602709/13557629
-        return emoji.get_emoji_regexp('es').sub(r'', t)
+        return replace_emoji(r'', t)
 
     def append(self, other):
         try:
+            # Verify both objects are dataframes
             super().append(other)
 
             if self.data is None:
                 # If no data stored then initialize
                 self.data = other.data
-
                 self.rename(twitter_data.conf['rename_maps']['tweets'])
 
             else:
-                self.data = self.data.append(
-                    other.data, ignore_index=True)
+                self.data = pd.concat(
+                    [self.data, other.data],
+                    axis=0,
+                    ignore_index=True
+                )
         except Exception as e:
             logging.exception(e.args)
             print(f'Failed to append data!')

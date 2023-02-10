@@ -12,11 +12,16 @@ class Places(twitter_data.TwitterData):
         self.rename(twitter_data.conf['rename_maps']['places'])
 
     def append(self, other):
+        # TODO: method is duplicated across all the twitter_data objects;
+        #   move to twitter_data parent object
         try:
             super().append(other)
 
-            self.data = self.data.append(
-                other.data, ignore_index=True)
+            self.data = pd.concat(
+                [self.data, other.data],
+                axis=0,
+                ignore_index=True
+            )
         except Exception as e:
             print(f'Failed to append data! {e.args[0]}')
 

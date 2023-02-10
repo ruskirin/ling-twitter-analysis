@@ -2,7 +2,6 @@
 file_paths:
   # Paths from project root 
   verb_conjug: 'data/ES-verbs-conjugations.xlsx'
-  credentials: 'src/twitter_connection/credentials.yml'
 formats:
   date: '%Y-%m-%d'
   time: '%H:%M:%S'

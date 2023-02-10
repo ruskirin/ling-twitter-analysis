@@ -4,18 +4,41 @@ import regex
 import pandas as pd
 from pathlib import Path
 from unidecode import unidecode
-import importlib.util as imp
-import sys
+import utils
 
-spec_src = imp.spec_from_file_location(
-    'src',
-    '../__init__.py'
-)
-m = imp.module_from_spec(spec_src)
-sys.modules[spec_src.name] = m
-spec_src.loader.exec_module(m)
 
-from src import utils
+logger = logging.getLogger(__name__)
+
+
+def select_path_extracted(source='twitter', is_test=False, lang='es') -> Path:
+    """
+    Print the contents of the extracted data directory and return the prompted
+      path
+
+    :param source: extraction source; one of {twitter, corpes}
+    :param is_test: whether to use the test folder
+    :param lang: language; one of {es, pt}
+    :return: Path object
+    """
+    e = list(utils.get_save_path('e', source, is_test=is_test, lang=lang).iterdir())
+    print(f'Select one of the available folders:')
+    for i,f in enumerate(e):
+        print(f'{i}. {f.stem}')
+
+    while True:
+        try:
+            choice = int(input('Return folder: '))
+            if (choice < 0) or (choice >= len(e)):
+                raise ValueError()
+
+            return e[choice]
+
+        except ValueError:
+            print('Select a valid folder')
+
+
+def remove_dups_extracted(e_path):
+    pass
 
 
 def folder_dup_clean(
@@ -31,7 +54,7 @@ def folder_dup_clean(
 
     """
     Find and remove all duplicate entries from CSV files in specified folder.
-    Targeted files must have a standardized name schema.
+    Targeted files must have a standardized name schema
 
     :param cleaned: already processed/cleaned folders
     :param path: folder path as a Path object
@@ -75,8 +98,12 @@ def folder_dup_clean(
 
         # Concatenate all matched files. Reset index
         matched = pd.concat(
-            [pd.read_csv(path/folder/p, sep=file_csv_sep, lineterminator='\n') for p in paths])\
-              .reset_index(drop=True)
+            [pd.read_csv(
+                path/folder/p,
+                sep=file_csv_sep,
+                lineterminator='\n') for p in paths]
+        ).reset_index(drop=True)
+
         original_total += matched.shape[0]
         logging.debug(f'Total {matched.shape[0]} tweets')
 
@@ -129,25 +156,13 @@ def assign_ids(df: pd.DataFrame, start=0) -> pd.DataFrame:
     return data
 
 
-# def standardize()
+def separate_by_verb():
+    """
+
+    """
+    pass
 
 
-# def remove_dups(
-#         dfs: list,
-#         dup_id,
-#         dfs_directory=None,
-#         csv_sep='~',
-#         return_distrib=False):
-#
-#     dfs_type = type(dfs[0])
-#
-#     if ((dfs_type is str) or (dfs_type is Path)) and  dfs_directory is not None:
-#         dfs = [pd.read_csv(dfs_directory/p, sep=csv_sep) for p in dfs]
-#
-#     assert type(dfs[0]) is pd.DataFrame, "Couldn't read passed @dfs data; " \
-#                                          "make sure is list of DataFrames or " \
-#                                          "CSV paths"
-#
-#     if not return_distrib:
-#         dup = matched.duplicated(subset=dup_subset)
-#         matched.drop(matched[dup].index, axis=0, inplace=True)
+if __name__ == '__main__':
+    f = select_path_extracted()
+    print(f)

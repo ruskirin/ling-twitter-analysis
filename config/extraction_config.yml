@@ -1,12 +1,5 @@
 ---
 filled_verbs:
-  - decir
-  - ver
-  - querer
-  - saber
-  - creer
-  - esperar
-  - pensar
 rename_maps:
   tweets:
     id: tweet_id
