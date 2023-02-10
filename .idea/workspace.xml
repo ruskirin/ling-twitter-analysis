@@ -6,19 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="28a4ad1d-c401-42ea-ad76-8f8aff8e60d4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/extraction_config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/extraction_config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/general_config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/general_config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/que_drop.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/que_drop.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/analysis/20220107-change-text-norm.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/analysis/cleaning.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/cleaning.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/analysis/twitter-cleaning.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/twitter-cleaning.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/twitter_connection/connection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/connection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_connection/response.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/response.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter-extracting.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter-extracting.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/places.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter_data/places.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/tweets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter_data/tweets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter_data/users.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/twitter_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter_data/twitter_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -175,7 +165,7 @@
       <workItem from="1675780601903" duration="17170000" />
       <workItem from="1675866851873" duration="623000" />
       <workItem from="1675895921154" duration="16180000" />
-      <workItem from="1676042729125" duration="9228000" />
+      <workItem from="1676042729125" duration="11415000" />
     </task>
     <servers />
   </component>
@@ -206,7 +196,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/lin_que_dropping$cleaning.coverage" NAME="cleaning Coverage Results" MODIFIED="1675983510055" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/analysis" />
-    <SUITE FILE_PATH="coverage/lin_que_dropping$connection.coverage" NAME="connection Coverage Results" MODIFIED="1676056122216" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/twitter_connection" />
+    <SUITE FILE_PATH="coverage/lin_que_dropping$connection.coverage" NAME="connection Coverage Results" MODIFIED="1676056765893" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/twitter_connection" />
     <SUITE FILE_PATH="coverage/lin_que_dropping$utils.coverage" NAME="utils Coverage Results" MODIFIED="1675983393676" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
 </project>

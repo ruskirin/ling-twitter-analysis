@@ -30,7 +30,6 @@ class TwitterConnection:
         self.conf = get_config('conn')
 
         self.header = self.create_headers(key, key_name)
-        print(key_name)
 
         # Saved response from .connect()
         self.response = None
@@ -204,7 +203,6 @@ class TwitterConnection:
                                      'environment variable were passed')
 
             token = key if key is not None else config(env_key_name)
-            print(config.search_path)
 
             logger.debug(f'Authorizing connection: '
                          f'"{"direct key" if key is not None else env_key_name}"')
@@ -229,3 +227,4 @@ class TwitterConnection:
 
 if __name__ == '__main__':
     con = TwitterConnection('es', True, key_name='SECRET')
+    con.paginate('.', ('test', 'test'), 100, 1)

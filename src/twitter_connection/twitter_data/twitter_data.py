@@ -1,7 +1,8 @@
 import logging
 import regex as re
 import pandas as pd
-from utils import get_config, save_csv
+from utils import save_csv as util_save_csv
+from utils import get_config
 
 conf = get_config('e')
 gen_conf = get_config()
@@ -25,10 +26,9 @@ class TwitterData:
                f'-{topic}' \
                f'-original' \
                f'-{self.__class__.__name__.lower()}' \
-               f'-{self.data.shape[0]}' \
-               f'-{num}.csv'
+               f'-{num}'
 
-        save_csv(path, self.data, name_scheme)
+        util_save_csv(path, self.data, name_scheme)
 
     def remove_dups(self, subset: str):
         logging.debug(f'Removing duplicates; '
