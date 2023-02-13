@@ -2,7 +2,7 @@ import logging
 import regex as re
 import pandas as pd
 from utils import save_csv as util_save_csv
-from utils import get_config
+from utils import get_config, make_dir
 
 conf = get_config('e')
 gen_conf = get_config()
@@ -22,10 +22,13 @@ class TwitterData:
         assert isinstance(other, type(self)), 'Cannot append data!'
 
     def save_csv(self, path, lang, topic, num):
+        data_type = self.__class__.__name__.lower()
+        path = make_dir(path, data_type)
+
         name_scheme = f'{lang}' \
                f'-{topic}' \
                f'-original' \
-               f'-{self.__class__.__name__.lower()}' \
+               f'-{data_type}' \
                f'-{num}'
 
         util_save_csv(path, self.data, name_scheme)

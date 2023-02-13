@@ -52,6 +52,7 @@ class Tweets(twitter_data.TwitterData):
 
     def save_csv(self, path, lang, topic, num):
         self.remove_dups('tweet_id')
+
         super().save_csv(path, lang, topic, num)
 
     @classmethod

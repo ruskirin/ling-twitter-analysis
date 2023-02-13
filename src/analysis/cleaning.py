@@ -4,37 +4,17 @@ import regex
 import pandas as pd
 from pathlib import Path
 from unidecode import unidecode
-import utils
+import utils as u
 
 
 logger = logging.getLogger(__name__)
 
 
-def select_path_extracted(source='twitter', is_test=False, lang='es') -> Path:
-    """
-    Print the contents of the extracted data directory and return the prompted
-      path
+# def split_
 
-    :param source: extraction source; one of {twitter, corpes}
-    :param is_test: whether to use the test folder
-    :param lang: language; one of {es, pt}
-    :return: Path object
-    """
-    e = list(utils.get_save_path('e', source, is_test=is_test, lang=lang).iterdir())
-    print(f'Select one of the available folders:')
-    for i,f in enumerate(e):
-        print(f'{i}. {f.stem}')
 
-    while True:
-        try:
-            choice = int(input('Return folder: '))
-            if (choice < 0) or (choice >= len(e)):
-                raise ValueError()
-
-            return e[choice]
-
-        except ValueError:
-            print('Select a valid folder')
+def get_existing_tweet_ids(loc: str):
+    pass
 
 
 def remove_dups_extracted(e_path):
@@ -164,5 +144,5 @@ def separate_by_verb():
 
 
 if __name__ == '__main__':
-    f = select_path_extracted()
+    f = get_saved_data()
     print(f)

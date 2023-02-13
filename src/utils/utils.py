@@ -37,15 +37,15 @@ def get_project_root() -> Path:
     return root_path
 
 
-def get_save_path(save_dir: str,
-                  save_from: str = '',
-                  is_test: bool = False,
-                  lang: str = 'es') -> Path:
+def get_save_location(loc: str,
+                      corpus: str = '',
+                      is_test: bool = False,
+                      lang: str = 'es') -> Path:
     """
     Get filepath to the saved tweets
 
-    :param save_dir: 'e' extracted, 'c' cleaned, 'p' processed
-    :param save_from: 'twitter' or 'corpes'
+    :param loc: 'e' extracted, 'c' cleaned, 'p' processed
+    :param corpus: 'twitter' or 'corpes'
     :param is_test: get the test saves
     :param lang: language of tweets (separated by language); default is just the saved
       folder
@@ -54,20 +54,78 @@ def get_save_path(save_dir: str,
     from_locs = {'twitter', 'corpes'}
 
     data_path = get_project_root()/'data'
-    if save_dir not in dirs.keys():
+    if loc not in dirs.keys():
         return data_path
 
-    data_path = data_path\
-                /dirs[save_dir]\
-                /('saved' if not is_test else 'test')
-    if (save_from not in from_locs) or is_test:
+    data_path = data_path / dirs[loc] / ('saved' if not is_test else 'test')
+    if (corpus not in from_locs) or is_test:
         return data_path
 
-    data_path = data_path/save_from
+    data_path = data_path / corpus
     if lang is None:
         return data_path
 
     return data_path/lang
+
+
+def get_saved_data_path(loc,
+                        folder=None,
+                        corpus='twitter',
+                        is_test=False,
+                        lang='es'):
+    """
+    Get path (or a list of paths) to a directory with saved data
+
+    :param loc: save data location: one of
+      {e: extraction, c: cleaning, p: processing}
+    :param folder: (optional) folder name to retrieve OR 'all' for all folders
+      in save directory
+    :param corpus: extraction corpus: one of {twitter, corpes}
+    :param is_test: whether to use the test folder
+    :param lang: language; one of {es, pt}
+    :return: Path object
+    """
+    if loc not in {'e', 'c', 'p'}:
+        return None
+
+    dir = get_save_location(loc, corpus, is_test, lang)
+    if folder is not None:
+        if folder == 'all':
+            return list(dir.iterdir())
+
+        path = dir/folder
+        return path if path.is_dir() else None
+
+    return _select_folders(dir)
+
+
+def _select_folders(dir: Path) -> list[Path]:
+    """
+    Prompts you to choose one or more folders from a directory
+
+    :param dir: a `Path` object representing the directory to select folders from
+    :return: list of `Path` objects representing selected folders
+    """
+    if not dir.is_dir():
+        raise NotADirectoryError(f'"{dir}" is not a directory')
+
+    d = list(dir.iterdir())
+
+    print(f'Choose from the available folders, comma-separated (or "a" for all):')
+    for i, f in enumerate(d):
+        print(f'{i}. {f.stem}')
+
+    while True:
+        choice = input('Return folder(s): ')
+        if choice == 'a':
+            return d
+
+        try:
+            cs = choice.split(',')
+            return [d[int(c.strip())] for c in cs]
+
+        except IndexError:
+            print('Select valid folder(s) (or "a" for all)')
 
 
 def make_dir(dir_path,
@@ -203,7 +261,7 @@ def save_csv(
     try:
         if not batch:
             name = f'{name_scheme}-{df.shape[0]}'
-            if '.csv' not in name_scheme:
+            if name_scheme[-4:] != '.csv':
                 name = name + '.csv'
 
             df.to_csv(path / name, sep=file_sep, index=False)
@@ -434,4 +492,4 @@ def remove_empty_dirs(path: Path):
 
 
 if __name__ == '__main__':
-    print(get_verb_conjugations())
+    print(get_saved_data_path('e'))
