@@ -2,38 +2,30 @@
 file_paths:
   # Paths from project root 
   verb_conjug: 'data/ES-verbs-conjugations.xlsx'
+  ids: 'data/ids'
 formats:
   date: '%Y-%m-%d'
   time: '%H:%M:%S'
 dtypes:
   twitter:
     regular:
-      tweet_id: float
+      tweet_id: UInt64
+      user_id: UInt64
+      tweet_place_id: UInt64
       verbs: string
       text_orig: string
       text_norm: string
       dependencies: string
       lemma_pos_stopword: string
       retweet_reply_like_quote: string
-      user_id: string
-      tweet_place_id: string
       mentions: string
       referenced_tweets: string
-    # For when above yields error because of bad fields, better to
-    #   just specify numeric fields as 'object' than allow to 
-    #   predict type
-    error:
-      tweet_id: object
-      verbs: string
-      text_orig: string
-      text_norm: string
-      dependencies: string
-      lemma_pos_stopword: string
-      retweet_reply_like_quote: string
-      user_id: string
-      tweet_place_id: string
-      mentions: string
-      referenced_tweets: string
+      lang: category
+      public_metrics.retweet_count: Sparse[int]
+      public_metrics.reply_count: Sparse[int]
+      public_metrics.like_count: Sparse[int]
+      public_metrics.quote_count: Sparse[int]
+      public_metrics.impression_count: UInt64
     dates:
       - created_at
   corpes:

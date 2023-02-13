@@ -13,8 +13,34 @@ logger = logging.getLogger(__name__)
 # def split_
 
 
-def get_existing_tweet_ids(loc: str):
-    pass
+def update_ids(dir: Path, id_col: str, data_type: str) -> list|None:
+    """
+    TODO: CONTINUE WORKING ON KEEPING TRACK OF DUPLICATE ENTRIES
+
+
+    Extract all unique @id entries from all CSV files in @dir and append to
+      respective <@data_type>.txt file in ../lin-que-dropping/data/ids/
+
+    :param dir:
+    :param id_col:
+    :param data_type: one of {'tweets', 'users', 'places', 'twitterdata'}
+    :return: list of duplicated entries (if any)
+    """
+    if data_type not in {'tweets', 'users', 'places', 'twitterdata'}:
+        return None
+
+    conf = u.get_config()
+    id_path = u.get_project_root()/conf['file_paths']['ids']/(data_type + '.txt')
+
+    with open(id_path, 'r') as f:
+        ids = {i.strip() for i in f.read().split(',')}
+
+    duplicates = set() # keep track of duplicate entries
+    for f in dir.iterdir():
+        data = u.get_csv(f, columns=['tweet_id']).to_numpy()
+
+    return ids
+
 
 
 def remove_dups_extracted(e_path):
@@ -93,7 +119,7 @@ def folder_dup_clean(
         logging.debug(f'Dropped {dup.sum()} {file_identifier} duplicates in {folder}')
 
         name = f'{folder}-cleaned-{name_scheme if name_scheme!="" else file_identifier}'
-        utils.save_csv(path/folder,
+        u.save_csv(path/folder,
                        matched,
                        name,
                        batch,
@@ -144,5 +170,4 @@ def separate_by_verb():
 
 
 if __name__ == '__main__':
-    f = get_saved_data()
-    print(f)
+    print(update_ids(None, None, data_type='tweets'))

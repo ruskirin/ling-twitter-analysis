@@ -6,10 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="28a4ad1d-c401-42ea-ad76-8f8aff8e60d4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/general_config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/general_config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/.ipynb_checkpoints/twitter-cleaning-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/.ipynb_checkpoints/twitter-cleaning-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/analysis/cleaning.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/cleaning.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/analysis/twitter-cleaning.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/twitter-cleaning.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter-extracting.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter-extracting.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/tweets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter_data/tweets.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/twitter_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter_data/twitter_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/utils.py" afterDir="false" />
     </list>
@@ -72,7 +72,7 @@
       <recent name="$PROJECT_DIR$/src/utils" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.utils">
+  <component name="RunManager" selected="Python.cleaning">
     <configuration name="cleaning" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="lin-que-dropping" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -141,9 +141,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.cleaning" />
         <item itemvalue="Python.utils" />
         <item itemvalue="Python.connection" />
-        <item itemvalue="Python.cleaning" />
       </list>
     </recent_temporary>
   </component>
@@ -172,7 +172,7 @@
       <workItem from="1676060402836" duration="2500000" />
       <workItem from="1676209285323" duration="3439000" />
       <workItem from="1676243794059" duration="995000" />
-      <workItem from="1676300457096" duration="8164000" />
+      <workItem from="1676300457096" duration="15487000" />
     </task>
     <servers />
   </component>
@@ -202,7 +202,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/lin_que_dropping$cleaning.coverage" NAME="cleaning Coverage Results" MODIFIED="1675983510055" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/analysis" />
+    <SUITE FILE_PATH="coverage/lin_que_dropping$cleaning.coverage" NAME="cleaning Coverage Results" MODIFIED="1676320680739" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/analysis" />
     <SUITE FILE_PATH="coverage/lin_que_dropping$connection.coverage" NAME="connection Coverage Results" MODIFIED="1676056765893" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/twitter_connection" />
     <SUITE FILE_PATH="coverage/lin_que_dropping$utils.coverage" NAME="utils Coverage Results" MODIFIED="1676306189137" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>

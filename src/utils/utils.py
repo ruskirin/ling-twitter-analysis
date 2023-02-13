@@ -157,12 +157,14 @@ def make_dir(dir_path,
 
 
 def get_csv(
-        data_from: str,
         path: Path,
+        columns: list = None,
+        corpus: str = 'twitter',
         dtypes: dict = None,
         dates=False,
         sep='~',
-        lineterminator=None):
+        lineterminator=None
+):
 
     # TODO: attempting to optimize the function has resulted in it breaking
     #   more often than not. Run and see the results
@@ -170,63 +172,50 @@ def get_csv(
     """
     Optimized version utilizing pandas.read_csv() with dtypes specified
 
-    :param data_from: 'twitter' or 'corpes'
     :param path: path to CSV
+    :param columns: (optional) list of columns to load from CSV
+    :param corpus: 'twitter' or 'corpes'
     :param dtypes: (optional) dictionary mapping cols to their respective dtypes
     :param dates: (optional) list with datetime columns
     :param sep: separator used in CSV (default: '~')
     :param lineterminator: (optional) use '\n' if failing to read CSVs
     :return: dataframe
     """
-
-    from_locs = {'twitter', 'corpes'}
-    if data_from not in from_locs:
-        logger.exception(f'Wrong argument for "data_from": {data_from}'
-                          f'\nMust be one of: {from_locs}')
+    if corpus not in {'twitter', 'corpes'}:
+        logger.exception(f'{corpus} is not a valid corpus')
         return None
 
     conf = get_config()
 
-    if dtypes is None:
-        dtypes = conf['dtypes'][data_from]['regular']
+    if not dtypes:
+        dtypes = conf['dtypes'][corpus]['regular']
+    if not dates:
+        dates = conf['dtypes'][corpus]['dates']
 
     try:
         data = read_csv(path,
+                        names=columns,
                         sep=sep,
                         dtype=dtypes,
                         parse_dates=dates,
                         lineterminator=lineterminator,
                         on_bad_lines='warn')
-    except ParserError:
-        data = read_csv(path,
-                        sep=sep,
-                        dtype=dtypes,
-                        parse_dates=dates,
-                        lineterminator='\n',
-                        engine='python',
-                        on_bad_lines='error')
-    except TypeError:
-        data = read_csv(path,
-                        sep=sep,
-                        dtype=dtypes,
-                        parse_dates=dates,
-                        lineterminator=lineterminator,
-                        on_bad_lines='warn',
-                        engine='python')
+        return data
+
     except Exception as e:
-        logger.debug(f'Exception while reading CSV: '
+        logger.exception(f'Exception while reading CSV: '
                       f'\n{e.args}')
-        logger.debug(f'\nReading using default dtypes')
+        return None
 
-        err_dtypes = conf['dtypes'][data_from]['error']
+        # err_dtypes = conf['dtypes'][corpus]['error']
 
-        data = read_csv(path,
-                        sep=sep,
-                        dtype=err_dtypes,
-                        parse_dates=dates,
-                        lineterminator=lineterminator,
-                        on_bad_lines='warn',
-                        engine='python')
+        # data = read_csv(path,
+        #                 sep=sep,
+        #                 dtype=err_dtypes,
+        #                 parse_dates=dates,
+        #                 lineterminator=lineterminator,
+        #                 on_bad_lines='warn',
+        #                 engine='python')
 
         # TODO: keep track of bad lines and record them
 
@@ -238,7 +227,87 @@ def get_csv(
         # logger.debug(f'Found {bad_text.sum()} bad text entries. Returning '
         #               f'remaining {data.shape[0]}.')
 
-    return data
+
+# def get_csv(
+#         path: Path,
+#         corpus: str,
+#         dtypes: dict = None,
+#         dates=False,
+#         sep='~',
+#         lineterminator=None):
+#
+#     # TODO: attempting to optimize the function has resulted in it breaking
+#     #   more often than not. Run and see the results
+#
+#     """
+#     Optimized version utilizing pandas.read_csv() with dtypes specified
+#
+#     :param path: path to CSV
+#     :param corpus: 'twitter' or 'corpes'
+#     :param dtypes: (optional) dictionary mapping cols to their respective dtypes
+#     :param dates: (optional) list with datetime columns
+#     :param sep: separator used in CSV (default: '~')
+#     :param lineterminator: (optional) use '\n' if failing to read CSVs
+#     :return: dataframe
+#     """
+#     if corpus not in {'twitter', 'corpes'}:
+#         logger.exception(f'{corpus} is not a valid corpus')
+#         return None
+#
+#     conf = get_config()
+#
+#     if dtypes is None:
+#         dtypes = conf['dtypes'][corpus]['regular']
+#
+#     try:
+#         data = read_csv(path,
+#                         sep=sep,
+#                         dtype=dtypes,
+#                         parse_dates=dates,
+#                         lineterminator=lineterminator,
+#                         on_bad_lines='warn')
+#     except ParserError:
+#         data = read_csv(path,
+#                         sep=sep,
+#                         dtype=dtypes,
+#                         parse_dates=dates,
+#                         lineterminator='\n',
+#                         engine='python',
+#                         on_bad_lines='error')
+#     except TypeError:
+#         data = read_csv(path,
+#                         sep=sep,
+#                         dtype=dtypes,
+#                         parse_dates=dates,
+#                         lineterminator=lineterminator,
+#                         on_bad_lines='warn',
+#                         engine='python')
+#     except Exception as e:
+#         logger.debug(f'Exception while reading CSV: '
+#                       f'\n{e.args}')
+#         logger.debug(f'\nReading using default dtypes')
+#
+#         err_dtypes = conf['dtypes'][corpus]['error']
+#
+#         data = read_csv(path,
+#                         sep=sep,
+#                         dtype=err_dtypes,
+#                         parse_dates=dates,
+#                         lineterminator=lineterminator,
+#                         on_bad_lines='warn',
+#                         engine='python')
+#
+#         # TODO: keep track of bad lines and record them
+#
+#         # logger.debug(f'Read {data.shape[0]} tweets; removing null entries')
+#
+#         # bad_text = data['normalized'].isna()
+#         # data = data.drop(data[bad_text].index).reset_index(drop=True)
+#         #
+#         # logger.debug(f'Found {bad_text.sum()} bad text entries. Returning '
+#         #               f'remaining {data.shape[0]}.')
+#
+#     return data
 
 
 def save_csv(

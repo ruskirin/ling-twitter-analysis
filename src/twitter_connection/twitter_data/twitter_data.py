@@ -44,7 +44,6 @@ class TwitterData:
 
     @classmethod
     def from_csv(cls, path, sep, original, *additional):
-
         try:
             with open(path+original) as f:
                 t = cls(pd.read_csv(f, sep=sep))
