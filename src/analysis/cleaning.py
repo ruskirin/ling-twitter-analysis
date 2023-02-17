@@ -10,21 +10,37 @@ import utils as u
 logger = logging.getLogger(__name__)
 
 
+# Module-wide
+# TODO LIST:
+#   - test update_ids()
+#   -
+#   -
+#   -
+
+
 # def split_
 
 
-def update_ids(dir: Path, id_col: str, data_type: str) -> list|None:
+def update_ids(dir: Path, id_col: str, data_type: str) -> (int, set):
     """
-    TODO: CONTINUE WORKING ON KEEPING TRACK OF DUPLICATE ENTRIES
+    TODO: update pd.read_csv() to optimized utils.get_csv() when fixed
 
 
     Extract all unique @id entries from all CSV files in @dir and append to
-      respective <@data_type>.txt file in ../lin-que-dropping/data/ids/
+      respective <@data_type>.txt file in ../lin-que-dropping/data/ids/ .
+      Returns a set of duplicated ids which already existed in the text file.
+
+      NOTE: does not recognize all duplicates; run a dedicated duplicate finder
+        method to ensure unique tokens! The method of identifying duplicates
+        does not look for them in the passed files themselves -- eg. some file
+        A in @dir has x > 1 instances of token id m, m is new to the stored
+        records and will thus be considered unique, and all x entries will
+        bypass the duplicate checker!!!
 
     :param dir:
     :param id_col:
     :param data_type: one of {'tweets', 'users', 'places', 'twitterdata'}
-    :return: list of duplicated entries (if any)
+    :return: tuple (number new entries, set of duplicated ids (if any))
     """
     if data_type not in {'tweets', 'users', 'places', 'twitterdata'}:
         return None
@@ -35,11 +51,27 @@ def update_ids(dir: Path, id_col: str, data_type: str) -> list|None:
     with open(id_path, 'r') as f:
         ids = {i.strip() for i in f.read().split(',')}
 
+    na_ids = len(ids) # total number ids before update
+    logger.debug(f'Updating "{data_type}" ids; {na_ids} existing')
+
     duplicates = set() # keep track of duplicate entries
     for f in dir.iterdir():
-        data = u.get_csv(f, columns=['tweet_id']).to_numpy()
+        # Series -> unique -> set is significantly faster than Series -> set
+        data = pd.read_csv(f, sep='~', usecols=[id_col])[id_col].astype(str)
+        fids = set(data.unique())
+        dupes = ids.intersection(fids) # identify duplicates
+        duplicates.update(dupes)
 
-    return ids
+        ids.update(fids)
+
+    nb_ids = len(ids) # total number of ids after update
+    logger.debug(f'{nb_ids} (+{nb_ids-na_ids}) unique ids after update. '
+                 f'\nFound {len(duplicates)} duplicate ids.')
+
+    with open(id_path, 'w') as f:
+        f.write(','.join(ids))
+
+    return nb_ids-na_ids, duplicates
 
 
 
@@ -170,4 +202,7 @@ def separate_by_verb():
 
 
 if __name__ == '__main__':
-    print(update_ids(None, None, data_type='tweets'))
+    n, dupes = update_ids(data_type='tweets',
+                     dir=u.get_saved_data_path('e','2023-02-08-at-23:05:39/tweets/'),
+                     id_col='tweet_id')
+    print(n, len(dupes))

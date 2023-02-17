@@ -1,16 +1,14 @@
-import re
-import logging
 import pandas as pd
+from logging import getLogger
+from twitter_data.twitter_data import TwitterData, conf
 
-from twitter_data import twitter_data
 
-
-class Users(twitter_data.TwitterData):
+class Users(TwitterData):
     def __init__(self, data=None):
         super().__init__(data)
 
         if data is not None:
-            self.rename(twitter_data.conf['rename_maps']['users'])
+            self.rename_cols(conf['rename_maps']['users'])
 
     def append(self, other):
         try:
@@ -19,7 +17,7 @@ class Users(twitter_data.TwitterData):
             if self.data is None:
                 self.data = other.data
 
-                self.rename(twitter_data.conf['rename_maps']['users'])
+                self.rename_cols(conf['rename_maps']['users'])
 
             else:
                 self.data = pd.concat(
@@ -30,7 +28,3 @@ class Users(twitter_data.TwitterData):
 
         except Exception as e:
             print(f'Failed to append data! {e.args[0]}')
-
-    def save_csv(self, path, lang, topic, num):
-        self.remove_dups('user_id')
-        super().save_csv(path, lang, topic, num)

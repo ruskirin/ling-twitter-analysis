@@ -37,6 +37,11 @@ def get_project_root() -> Path:
     return root_path
 
 
+def get_relative_to_proot(path: Path) -> Path:
+    """Get the @path starting from 'lin-que-dropping/..."""
+    return path.relative_to(get_project_root())
+
+
 def get_save_location(loc: str,
                       corpus: str = '',
                       is_test: bool = False,
@@ -72,7 +77,7 @@ def get_saved_data_path(loc,
                         folder=None,
                         corpus='twitter',
                         is_test=False,
-                        lang='es'):
+                        lang='es') -> list[Path]:
     """
     Get path (or a list of paths) to a directory with saved data
 
@@ -86,7 +91,7 @@ def get_saved_data_path(loc,
     :return: Path object
     """
     if loc not in {'e', 'c', 'p'}:
-        return None
+        raise ValueError(f'"{loc}" must be one of: "e", "c", "p"')
 
     dir = get_save_location(loc, corpus, is_test, lang)
     if folder is not None:
@@ -154,78 +159,6 @@ def make_dir(dir_path,
         logger.exception(f'Cannot make directory -- invalid path: \n{fnf.args}')
     except Exception as e:
         logger.exception(f'Error while making directory! \n{e.args}')
-
-
-def get_csv(
-        path: Path,
-        columns: list = None,
-        corpus: str = 'twitter',
-        dtypes: dict = None,
-        dates=False,
-        sep='~',
-        lineterminator=None
-):
-
-    # TODO: attempting to optimize the function has resulted in it breaking
-    #   more often than not. Run and see the results
-
-    """
-    Optimized version utilizing pandas.read_csv() with dtypes specified
-
-    :param path: path to CSV
-    :param columns: (optional) list of columns to load from CSV
-    :param corpus: 'twitter' or 'corpes'
-    :param dtypes: (optional) dictionary mapping cols to their respective dtypes
-    :param dates: (optional) list with datetime columns
-    :param sep: separator used in CSV (default: '~')
-    :param lineterminator: (optional) use '\n' if failing to read CSVs
-    :return: dataframe
-    """
-    if corpus not in {'twitter', 'corpes'}:
-        logger.exception(f'{corpus} is not a valid corpus')
-        return None
-
-    conf = get_config()
-
-    if not dtypes:
-        dtypes = conf['dtypes'][corpus]['regular']
-    if not dates:
-        dates = conf['dtypes'][corpus]['dates']
-
-    try:
-        data = read_csv(path,
-                        names=columns,
-                        sep=sep,
-                        dtype=dtypes,
-                        parse_dates=dates,
-                        lineterminator=lineterminator,
-                        on_bad_lines='warn')
-        return data
-
-    except Exception as e:
-        logger.exception(f'Exception while reading CSV: '
-                      f'\n{e.args}')
-        return None
-
-        # err_dtypes = conf['dtypes'][corpus]['error']
-
-        # data = read_csv(path,
-        #                 sep=sep,
-        #                 dtype=err_dtypes,
-        #                 parse_dates=dates,
-        #                 lineterminator=lineterminator,
-        #                 on_bad_lines='warn',
-        #                 engine='python')
-
-        # TODO: keep track of bad lines and record them
-
-        # logger.debug(f'Read {data.shape[0]} tweets; removing null entries')
-
-        # bad_text = data['normalized'].isna()
-        # data = data.drop(data[bad_text].index).reset_index(drop=True)
-        #
-        # logger.debug(f'Found {bad_text.sum()} bad text entries. Returning '
-        #               f'remaining {data.shape[0]}.')
 
 
 # def get_csv(
@@ -310,42 +243,42 @@ def get_csv(
 #     return data
 
 
-def save_csv(
-        path: Path,
-        df: DataFrame,
-        name_scheme,
-        batch=False,
-        batch_size=1000,
-        file_sep='~'):
-    """
-    Save a dataframe as a CSV; option to batch into multiple files
-
-    :param path: location to save
-    :param df: dataframe
-    :param name_scheme: filename
-    :param batch: batch the dataframe? (bool)
-    :param batch_size: batch size if batch == True
-    :param file_sep: CSV separator
-    """
-    try:
-        if not batch:
-            name = f'{name_scheme}-{df.shape[0]}'
-            if name_scheme[-4:] != '.csv':
-                name = name + '.csv'
-
-            df.to_csv(path / name, sep=file_sep, index=False)
-            logger.info(f'Saved dataframe ({name_scheme}) CSV into: {path}')
-        else:
-            bins = ceil(df.shape[0] / batch_size)
-            # Split into batches of approximately the specified batch size
-            for i, b in enumerate(array_split(df, bins)):
-                name = f'{name_scheme}-{i}-{b.shape[0]}.csv'
-                b.to_csv(path / name, sep=file_sep, index=False)
-
-            logger.info(f'Saved {bins} files into: {path}')
-    except Exception as e:
-        logger.exception(e.args)
-        print(f'Problems saving data to CSV!')
+# def save_csv(
+#         path: Path,
+#         df: DataFrame,
+#         name_scheme,
+#         batch=False,
+#         batch_size=1000,
+#         file_sep='~'):
+#     """
+#     Save a dataframe as a CSV; option to batch into multiple files
+#
+#     :param path: location to save
+#     :param df: dataframe
+#     :param name_scheme: filename
+#     :param batch: batch the dataframe? (bool)
+#     :param batch_size: batch size if batch == True
+#     :param file_sep: CSV separator
+#     """
+#     try:
+#         if not batch:
+#             name = f'{name_scheme}-{df.shape[0]}'
+#             if name_scheme[-4:] != '.csv':
+#                 name = name + '.csv'
+#
+#             df.to_csv(path / name, sep=file_sep, index=False)
+#             logger.info(f'Saved dataframe ({name_scheme}) CSV into: {path}')
+#         else:
+#             bins = ceil(df.shape[0] / batch_size)
+#             # Split into batches of approximately the specified batch size
+#             for i, b in enumerate(array_split(df, bins)):
+#                 name = f'{name_scheme}-{i}-{b.shape[0]}.csv'
+#                 b.to_csv(path / name, sep=file_sep, index=False)
+#
+#             logger.info(f'Saved {bins} files into: {path}')
+#     except Exception as e:
+#         logger.exception(e.args)
+#         print(f'Problems saving data to CSV!')
 
 
 def save_excel(
@@ -491,14 +424,24 @@ def setup_logger(file_name: str, desc: str = '', append=False):
         return None
 
 
-def get_config(conf_type='g',
-               path: Path = None) -> dict:
+def get_yaml(path: Path):
+    """Return the contents of a yaml file"""
+    try:
+        with open(path, 'r') as f:
+            logger.info(f'Opened config file: {path.stem}')
+            return yaml.safe_load(f)
+
+    except TypeError as e:
+        logger.exception(f'Failed to open config file!\n{e.args}')
+        raise
+
+
+def get_config(conf_type='g') -> dict|None:
     """
     Return a YAML configuration dict.
     :param conf_type: choice of 'g, l, e, c, p'
       for 'general, log, extraction, cleaning, processing' configurations files
       (default: 'g')
-    :param path: (optional) direct path to config
     """
     types = {'g': 'general',
              'conn': 'connection',
@@ -507,20 +450,15 @@ def get_config(conf_type='g',
              'c': 'cleaning',
              'p': 'processing'}
 
+    if conf_type not in types:
+        raise ValueError(f'Must pass valid @conf_type; one of: \n{types.items()}')
+
     try:
-        if path is not None:
-            with open(path, 'r') as f:
-                logger.info(f'Opened config file: {path.stem}')
-                return yaml.safe_load(f)
-
         config_path = get_project_root()/'config'/f'{types[conf_type]}_config.yml'
-
-        with open(config_path, 'r') as f:
-            logger.info(f'Opened config file: {config_path.stem}')
-            return yaml.safe_load(f)
-
+        return get_yaml(config_path)
     except Exception as e:
         logger.exception(f'Failed to open config file! {e.args}')
+        raise
 
 
 def get_updated_config(conf: dict, path: Path) -> dict:

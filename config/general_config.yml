@@ -1,4 +1,5 @@
 ---
+csv_sep: '~'
 file_paths:
   # Paths from project root 
   verb_conjug: 'data/ES-verbs-conjugations.xlsx'
@@ -6,58 +7,3 @@ file_paths:
 formats:
   date: '%Y-%m-%d'
   time: '%H:%M:%S'
-dtypes:
-  twitter:
-    regular:
-      tweet_id: UInt64
-      user_id: UInt64
-      tweet_place_id: UInt64
-      verbs: string
-      text_orig: string
-      text_norm: string
-      dependencies: string
-      lemma_pos_stopword: string
-      retweet_reply_like_quote: string
-      mentions: string
-      referenced_tweets: string
-      lang: category
-      public_metrics.retweet_count: Sparse[int]
-      public_metrics.reply_count: Sparse[int]
-      public_metrics.like_count: Sparse[int]
-      public_metrics.quote_count: Sparse[int]
-      public_metrics.impression_count: UInt64
-    dates:
-      - created_at
-  corpes:
-    regular:
-      BIBLIOGRAFÍA: string
-      AUTOR: string
-      TITULO: string
-      FECHA: object
-      CRITERIO: string
-      BLOQUE: string
-      MEDIO: string
-      SOPORTE: string
-      TEMA: string
-      PAÍS: string
-      ZONA: object
-      TIPOLOGÍA: string
-      NOTAS: string
-      CONCORDANCIA: string
-    error:
-      BIBLIOGRAFÍA: string
-      AUTOR: string
-      TITULO: string
-      FECHA: string
-      CRITERIO: string
-      BLOQUE: string
-      MEDIO: string
-      SOPORTE: string
-      TEMA: string
-      PAÍS: string
-      ZONA: object
-      TIPOLOGÍA: string
-      NOTAS: string
-      CONCORDANCIA: string
-      
-      

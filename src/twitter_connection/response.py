@@ -1,6 +1,9 @@
 import json
-import logging
-from twitter_data import twitter_data, tweets, users, places
+from logging import getLogger
+from twitter_data import TwitterData, Tweets, Users, Places
+
+
+logger = getLogger(__name__)
 
 
 class Response:
@@ -22,33 +25,35 @@ class Response:
     def generate_tables(self, response):
         """
         Recursive method to expand @response and fill @self.tables with
-          DataFrames
+          DataFrames. Check the data type returned in response and assign
+          the appropriate DataFrame subclass.
 
-        :param response:
+        :param response: Twitter query response object
         :return:
         """
-        logging.debug(f'Generating tables from keys: {response.keys()}')
+        logger.debug(f'Generating tables from keys: {response.keys()}')
 
         for table in response.items():
-            if table[0]=='meta':
-                self.schema['meta'] = table[1]
-                continue
-            elif table[0]=='data':
-                self.schema['data'] = tweets.Tweets.from_json(table[1])
-                continue
-            elif table[0]=='users':
-                self.schema['users'] = users.Users.from_json(table[1])
-                continue
-            elif table[0]=='places':
-                self.schema['places'] = places.Places.from_json(table[1])
-                continue
+            t_type = table[0]
 
-            if not isinstance(table[1], dict):
+            if t_type=='meta':
+                self.schema[t_type] = table[1]
+            elif t_type=='data':
+                data = Tweets.from_json(table[1], self.topic, self.lang)
+                self.schema['data'] = data
+            elif t_type=='users':
+                data = Users.from_json(table[1], self.topic, self.lang)
+                self.schema[t_type] = data
+            elif t_type=='places':
+                data = Places.from_json(table[1], self.topic, self.lang)
+                self.schema[t_type] = data
+            elif isinstance(table[1], list):
+                data = TwitterData.from_json(table[1], self.topic, self.lang)
+                self.schema[t_type] = data
+            elif not isinstance(table[1], dict):
                 # If not a dictionary but a list, add as DataFrame.
                 #   Else add as a regular entry
-                self.schema[table[0]] = twitter_data.TwitterData.from_json(
-                    table[1]) if isinstance(table[1], list) else table[1]
-                continue
+                self.schema[t_type] = table[1]
 
             # Recursive call to expand subtable
             self.generate_tables(table[1])
@@ -57,8 +62,8 @@ class Response:
         try:
             return self.schema['meta']['next_token']
         except KeyError:
-            logging.debug(f'Returned metadata:\n{self.schema["meta"]}')
-            logging.info('No next token to paginate')
+            logger.debug(f'Returned metadata:\n{self.schema["meta"]}')
+            logger.info('No next token to paginate')
             return None
 
     def append(self, response):
@@ -76,7 +81,7 @@ class Response:
 
             self.schema[table[0]].append(table[1])
 
-        logging.debug(f'After append: {self.schema["data"].data.shape[0]}')
+        logger.debug(f'After append: {self.schema["data"].data.shape[0]}')
 
     def reset_index(self):
         if len(self.schema)==0:
@@ -100,12 +105,12 @@ class Response:
                 if table[0]=='meta':
                     continue
 
-                if isinstance(table[1], tweets.twitter_data.TwitterData):
+                if isinstance(table[1], TwitterData):
                     table[1].save_csv(
                         folder_path, lang=self.lang, topic=self.topic, num=pulls)
 
         except Exception as e:
-            logging.exception(f'Exception while saving to CSV! {e.args}')
+            logger.exception(f'Exception while saving to CSV! {e.args}')
 
 
 def save_json(path, data):

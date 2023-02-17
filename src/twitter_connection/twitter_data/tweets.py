@@ -1,26 +1,30 @@
 import re
-import logging
+from logging import getLogger
 import pandas as pd
 from emoji import replace_emoji
 from unidecode import unidecode
-from twitter_data import twitter_data
+from pathlib import Path
+from twitter_data.twitter_data import TwitterData, conf, gconf
 
 
-class Tweets(twitter_data.TwitterData):
-    def __init__(self, data=None):
-        super().__init__(data)
+logger = getLogger(__name__)
 
-        if data is not None:
-            # Change column names
-            self.rename(twitter_data.conf['rename_maps']['tweets'])
-            # Append a column with normalized text
-            self.data = pd.concat([self.data, self.normalize(data)], axis=1)
+
+class Tweets(TwitterData):
+    def __init__(self, data, topic, lang):
+        super().__init__(data, topic, lang)
+
+        # if data is not None:
+        #     # Change column names
+        #     self.rename(conf['rename_maps']['tweets'])
+        #     # Append a column with normalized text
+        #     self.data = pd.concat([self.data, self.normalize(data)], axis=1)
 
     def normalize(self, data):
         return data.loc[:, 'text_orig']\
             .apply(self.norm_text)\
             .apply(unidecode)\
-            .rename('text_norm')
+            .rename_cols('text_norm')
 
     # Must precede unidecode otherwise text formatting might cause issues
     @staticmethod
@@ -38,7 +42,7 @@ class Tweets(twitter_data.TwitterData):
             if self.data is None:
                 # If no data stored then initialize
                 self.data = other.data
-                self.rename(twitter_data.conf['rename_maps']['tweets'])
+                self.rename_cols(conf['rename_maps']['tweets'])
 
             else:
                 self.data = pd.concat(
@@ -47,13 +51,8 @@ class Tweets(twitter_data.TwitterData):
                     ignore_index=True
                 )
         except Exception as e:
-            logging.exception(e.args)
+            logger.exception(e.args)
             print(f'Failed to append data!')
-
-    def save_csv(self, path, lang, topic, num):
-        self.remove_dups('tweet_id')
-
-        super().save_csv(path, lang, topic, num)
 
     @classmethod
     def from_csv(cls, path, sep, original, *additional):

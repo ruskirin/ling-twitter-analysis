@@ -1,0 +1,40 @@
+save_file:
+  twitter: '{lang}-twitter-{verb}-{data_type}'
+dtypes:
+  twitter:
+    regular:
+      tweet_id: UInt64
+      user_id: UInt64
+      tweet_place_id: string
+      verbs: string
+      text_orig: string
+      text_norm: string
+      dependencies: string
+      lemma_pos_stopword: string
+      retweet_reply_like_quote: string
+      mentions: string
+      referenced_tweets: string
+      lang: category
+      public_metrics.retweet_count: UInt32
+      public_metrics.reply_count: UInt32
+      public_metrics.like_count: UInt32
+      public_metrics.quote_count: UInt32
+      public_metrics.impression_count: UInt32
+    dates:
+      - created_at
+  corpes:
+    regular:
+      BIBLIOGRAFÍA: string
+      AUTOR: string
+      TITULO: string
+      FECHA: object
+      CRITERIO: string
+      BLOQUE: string
+      MEDIO: string
+      SOPORTE: string
+      TEMA: string
+      PAÍS: string
+      ZONA: object
+      TIPOLOGÍA: string
+      NOTAS: string
+      CONCORDANCIA: string
