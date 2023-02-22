@@ -37,8 +37,14 @@ def get_project_root() -> Path:
     return root_path
 
 
-def get_relative_to_proot(path: Path) -> Path:
+def get_relative_to_proot(path) -> Path:
     """Get the @path starting from 'lin-que-dropping/..."""
+    if not isinstance(path, Path):
+        path = Path(path)
+
+        if (not path.is_file()) and (not path.is_dir()):
+            raise ValueError(f'"{path}" is not a valid path')
+
     return path.relative_to(get_project_root())
 
 
@@ -499,4 +505,5 @@ def remove_empty_dirs(path: Path):
 
 
 if __name__ == '__main__':
-    print(get_saved_data_path('e'))
+    print(list(Path().iterdir()))
+    print(get_relative_to_proot(get_project_root()/'src'/'twitter_connection/twitter_data'))

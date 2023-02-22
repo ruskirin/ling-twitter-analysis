@@ -6,11 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="28a4ad1d-c401-42ea-ad76-8f8aff8e60d4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/backup_log_config.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/general_config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/general_config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/analysis/cleaning.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/cleaning.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/testing/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_connection/connection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/connection.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/twitter_connection/response.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/response.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter-extracting.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter-extracting.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter_data/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/places.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter_data/places.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/tweets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter_data/tweets.py" afterDir="false" />
@@ -77,7 +75,7 @@
       <recent name="$PROJECT_DIR$/src/utils" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.twitter_data">
+  <component name="RunManager" selected="Python.connection">
     <configuration name="cleaning" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="lin-que-dropping" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -168,10 +166,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.connection" />
+        <item itemvalue="Python.utils" />
         <item itemvalue="Python.twitter_data" />
         <item itemvalue="Python.cleaning" />
-        <item itemvalue="Python.utils" />
-        <item itemvalue="Python.connection" />
       </list>
     </recent_temporary>
   </component>
@@ -204,7 +202,12 @@
       <workItem from="1676474168190" duration="6212000" />
       <workItem from="1676484662822" duration="431000" />
       <workItem from="1676485104664" duration="538000" />
-      <workItem from="1676488107428" duration="24201000" />
+      <workItem from="1676488107428" duration="25438000" />
+      <workItem from="1676906936260" duration="11519000" />
+      <workItem from="1676940856415" duration="16000" />
+      <workItem from="1676990765003" duration="15842000" />
+      <workItem from="1677031039380" duration="10000" />
+      <workItem from="1677076005473" duration="9679000" />
     </task>
     <servers />
   </component>
@@ -226,22 +229,24 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/anaconda3/envs/que_drop/lib/python3.10/site-packages/decouple.py</url>
-          <line>232</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$USER_HOME$/anaconda3/envs/que_drop/lib/python3.10/site-packages/pandas/core/arrays/base.py</url>
           <line>271</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/lin_que_dropping$cleaning.coverage" NAME="cleaning Coverage Results" MODIFIED="1676392695707" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/analysis" />
-    <SUITE FILE_PATH="coverage/lin_que_dropping$connection.coverage" NAME="connection Coverage Results" MODIFIED="1676056765893" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/twitter_connection" />
-    <SUITE FILE_PATH="coverage/lin_que_dropping$twitter_data.coverage" NAME="twitter_data Coverage Results" MODIFIED="1676595646123" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/twitter_connection/twitter_data" />
-    <SUITE FILE_PATH="coverage/lin_que_dropping$utils.coverage" NAME="utils Coverage Results" MODIFIED="1676306189137" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/lin_que_dropping$twitter_data.coverage" NAME="twitter_data Coverage Results" MODIFIED="1676596102279" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/twitter_connection/twitter_data" />
+    <SUITE FILE_PATH="coverage/lin_que_dropping$connection.coverage" NAME="connection Coverage Results" MODIFIED="1677103154900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/twitter_connection" />
+    <SUITE FILE_PATH="coverage/lin_que_dropping$utils.coverage" NAME="utils Coverage Results" MODIFIED="1676912577876" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
 </project>

@@ -12,11 +12,20 @@ gconf = u.get_config()
 
 
 class TwitterData:
-    def __init__(self, data: pd.DataFrame, topic: str, lang: str):
+    def __init__(self,
+                 data: pd.DataFrame,
+                 topic: str,
+                 lang: str):
+
         self.data = data
+
         # dataframe name used when saving and retrieving
         self.topic = topic
         self.lang = lang
+
+    @property
+    def shape(self):
+        return self.data.shape
 
     def set_topic(self, topic, lang):
         name = conf['save_file']['twitter'].format(topic, lang)
@@ -31,40 +40,68 @@ class TwitterData:
     def append(self, other):
         assert isinstance(other, type(self)), 'Cannot append data!'
 
+        try:
+            self.data = pd.concat(
+                [self.data, other.data],
+                axis=0,
+                ignore_index=True
+            )
+        except Exception as e:
+            print(f'Failed to append data! {e.args[0]}')
+
     def save_csv(
             self,
             path: Path,
-            batch=False,
+            batch_data=False,
             batch_size=1000,
+            batch=None,
+            sep_by_type=False,
             name_scheme=None):
         """
         Save a dataframe as a CSV; option to batch into multiple files
 
         :param path: location to save
-        :param batch: batch the dataframe? (bool)
+        :param batch_data: batch the dataframe? (bool)
         :param batch_size: batch size if batch == True
+        :param batch: (optional) batch number to append to filename
         :param name_scheme: (optional) alternate name to use when saving
         """
+
+        # TODO 2/21: split this method up; way past having a single
+        #  responsibility. Also the separate batching and also single saving
+        #  using @page seems excessive. Thinking perhaps create separate methods
+        #  for different types of operations? eg. extraction_save(), clean_save(),
+        #  etc...?
+
         try:
             sep = gconf['csv_sep']
+            data_type = type(self).__name__.lower()
+
+            if sep_by_type:
+                path = u.make_dir(path, data_type)
+
             if name_scheme is None:
+                # format the filename as specified in config file
                 name_scheme = conf['save_file']['twitter'].format(
                     lang=self.lang,
                     verb=self.topic,
-                    data_type=type(self).__name__.lower()
+                    data_type=data_type
                 )
 
             # Remove the file format for now as need to append dataframe size
             if name_scheme[-4:] == '.csv':
                 name_scheme = name_scheme[:-4]
 
-            if not batch:
-                name = f'{name_scheme}-{self.data.shape[0]}.csv'
+            if batch is not None:
+                name_scheme = f'{name_scheme}-{batch}'
+
+            if not batch_data:
+                name = f'{name_scheme}-{self.shape[0]}.csv'
                 self.data.to_csv(path / name, sep=sep, index=False)
                 logger.info(f'Saved dataframe ({name_scheme}) CSV into: '
                             f'{u.get_relative_to_proot(path)}')
             else:
-                bins = ceil(self.data.shape[0] / batch_size)
+                bins = ceil(self.shape[0] / batch_size)
                 # Split into batches of approximately the specified batch size
                 for i, b in enumerate(array_split(self.data, bins)):
                     name = f'{name_scheme}-{i}-{b.shape[0]}.csv'

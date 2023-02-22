@@ -34,32 +34,15 @@ class Tweets(TwitterData):
         # Props to: https://stackoverflow.com/a/50602709/13557629
         return replace_emoji(r'', t)
 
-    def append(self, other):
-        try:
-            # Verify both objects are dataframes
-            super().append(other)
-
-            if self.data is None:
-                # If no data stored then initialize
-                self.data = other.data
-                self.rename_cols(conf['rename_maps']['tweets'])
-
-            else:
-                self.data = pd.concat(
-                    [self.data, other.data],
-                    axis=0,
-                    ignore_index=True
-                )
-        except Exception as e:
-            logger.exception(e.args)
-            print(f'Failed to append data!')
-
-    @classmethod
-    def from_csv(cls, path, sep, original, *additional):
-        t = super().from_csv(path, sep, original)
-
-        try:
-            t.normalized = pd.read_csv(path+additional[0], sep=sep)
-            return t
-        except Exception as e:
-            print(f'Error reading CSV!')
+    # TODO: old extension of from_csv() from previous version. Normalization
+    #   was performed prior to saving raw data... necessary?
+    #
+    # @classmethod
+    # def from_csv(cls, path, sep, original, *additional):
+    #     t = super().from_csv(path, sep, original)
+    #
+    #     try:
+    #         t.normalized = pd.read_csv(path+additional[0], sep=sep)
+    #         return t
+    #     except Exception as e:
+    #         print(f'Error reading CSV!')

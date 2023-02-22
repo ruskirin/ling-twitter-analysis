@@ -1,5 +1,6 @@
 import json
 from logging import getLogger
+from pathlib import Path
 from twitter_data import TwitterData, Tweets, Users, Places
 
 
@@ -14,17 +15,32 @@ class Response:
     :param topic:
     :param response:
     """
-    def __init__(self, lang, topic, response = None):
+    def __init__(self, lang, topic, response):
         self.lang = lang
         self.topic = topic
         # dict of various data extracted from query
-        self.schema = dict()
-        if response is not None:
-            self.generate_tables(response)
+        self.tables = dict()
+        self.extract_data(response)
 
-    def generate_tables(self, response):
+    @property
+    def next_token(self):
+        """Token used to navigate to next page of query"""
+        try:
+            return self.tables['meta']['next_token']
+        except KeyError:
+            logger.info('No next token to paginate')
+            return None
+
+    def __len__(self):
+        try:
+            return self.tables['data'].shape[0]
+        except (KeyError, TypeError) as e:
+            logger.exception(e.args)
+            return None
+
+    def extract_data(self, response):
         """
-        Recursive method to expand @response and fill @self.tables with
+        Recursive method to expand @response and fill @self.schema with
           DataFrames. Check the data type returned in response and assign
           the appropriate DataFrame subclass.
 
@@ -33,84 +49,71 @@ class Response:
         """
         logger.debug(f'Generating tables from keys: {response.keys()}')
 
-        for table in response.items():
-            t_type = table[0]
-
+        for t_type, table in response.items():
             if t_type=='meta':
-                self.schema[t_type] = table[1]
+                self.tables[t_type] = table
             elif t_type=='data':
-                data = Tweets.from_json(table[1], self.topic, self.lang)
-                self.schema['data'] = data
+                data = Tweets.from_json(table, self.topic, self.lang)
+                self.tables['data'] = data
             elif t_type=='users':
-                data = Users.from_json(table[1], self.topic, self.lang)
-                self.schema[t_type] = data
+                data = Users.from_json(table, self.topic, self.lang)
+                self.tables[t_type] = data
             elif t_type=='places':
-                data = Places.from_json(table[1], self.topic, self.lang)
-                self.schema[t_type] = data
-            elif isinstance(table[1], list):
-                data = TwitterData.from_json(table[1], self.topic, self.lang)
-                self.schema[t_type] = data
-            elif not isinstance(table[1], dict):
-                # If not a dictionary but a list, add as DataFrame.
-                #   Else add as a regular entry
-                self.schema[t_type] = table[1]
-
-            # Recursive call to expand subtable
-            self.generate_tables(table[1])
-
-    def get_next_token(self):
-        try:
-            return self.schema['meta']['next_token']
-        except KeyError:
-            logger.debug(f'Returned metadata:\n{self.schema["meta"]}')
-            logger.info('No next token to paginate')
-            return None
+                data = Places.from_json(table, self.topic, self.lang)
+                self.tables[t_type] = data
+            elif isinstance(table, list):
+                # table is a list of values
+                data = TwitterData.from_json(table, self.topic, self.lang)
+                self.tables[t_type] = data
+            elif not isinstance(table, dict):
+                # table is some other object; save it
+                self.tables[t_type] = table
+            else:
+                # Recursive call to expand subtable
+                self.extract_data(table)
 
     def append(self, response):
-        if len(self.schema)==0:
-            self.schema = response.schema
+        if len(self.tables)==0:
+            # this instance is empty, initialize
+            self.tables = response.tables
             return
 
-        for table in response.schema.items():
-            if table[0]=='meta':
-                continue
+        for t_type, table in response.tables.items():
+            # TODO 2/22: see if overwriting all the previous metadata is
+            #   the right move in this context
 
-            if table[0] not in self.schema:
-                self.schema[table[0]] = table[1]
-                continue
+            # get the metadata from the latest response
+            if (t_type == 'meta') or (t_type not in self.tables):
+                self.tables[t_type] = table
+            else:
+                self.tables[t_type].append(table)
 
-            self.schema[table[0]].append(table[1])
-
-        logger.debug(f'After append: {self.schema["data"].data.shape[0]}')
+        logger.debug(f'After append: {self.tables["data"].data.shape[0]}')
 
     def reset_index(self):
-        if len(self.schema)==0:
+        if len(self.tables)==0:
             return
 
-        for table in self.schema.items():
+        for table in self.tables.items():
             if table[0]=='meta':
                 continue
 
             table[1].reset_index(drop=True, inplace=True)
 
-    def save_csv(self, pulls, folder_path):
-        """
-        Save Response as a csv
-
-        @time, @pulls, @is_test: used during folder creation for save
-        @path: alternatively, supply full folder name to save in
-        """
+    def save_csv(self, path: Path, batch=None):
+        """Save extracted data as CSV"""
         try:
-            for table in self.schema.items():
-                if table[0]=='meta':
+            for t_type, data in self.tables.items():
+                # TODO 2/22: see if metadata should be saved instead
+                if t_type=='meta':
                     continue
 
-                if isinstance(table[1], TwitterData):
-                    table[1].save_csv(
-                        folder_path, lang=self.lang, topic=self.topic, num=pulls)
+                if isinstance(data, TwitterData):
+                    data.save_csv(path, batch=batch, sep_by_type=True)
 
         except Exception as e:
-            logger.exception(f'Exception while saving to CSV! {e.args}')
+            logger.exception(e.args)
+            raise
 
 
 def save_json(path, data):

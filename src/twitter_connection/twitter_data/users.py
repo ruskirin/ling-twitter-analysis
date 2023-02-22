@@ -3,28 +3,12 @@ from logging import getLogger
 from twitter_data.twitter_data import TwitterData, conf
 
 
+logger = getLogger(__name__)
+
+
 class Users(TwitterData):
-    def __init__(self, data=None):
-        super().__init__(data)
+    def __init__(self, data, topic, lang):
+        super().__init__(data, topic, lang)
 
-        if data is not None:
-            self.rename_cols(conf['rename_maps']['users'])
-
-    def append(self, other):
-        try:
-            super().append(other)
-
-            if self.data is None:
-                self.data = other.data
-
-                self.rename_cols(conf['rename_maps']['users'])
-
-            else:
-                self.data = pd.concat(
-                    [self.data, other.data],
-                    axis=0,
-                    ignore_index=True
-                )
-
-        except Exception as e:
-            print(f'Failed to append data! {e.args[0]}')
+        # if data is not None:
+        #     self.rename_cols(conf['rename_maps']['users'])
