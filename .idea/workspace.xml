@@ -6,15 +6,28 @@
   <component name="ChangeListManager">
     <list default="true" id="28a4ad1d-c401-42ea-ad76-8f8aff8e60d4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/combine-tags.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/combine-tags.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/images/ccomp-infinitive-sample.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/images/trees_sample_nque.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/images/trees_sample_que.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/useof-at-vs-tags.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/twitter_connection/connection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/connection.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/twitter_connection/response.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/response.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter-extracting.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter-extracting.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter_data/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/places.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter_data/places.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/tweets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter_data/tweets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/twitter_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter_data/twitter_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter_data/users.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/places.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/places.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/tweets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/tweets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/twitter_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/twitter_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter_data/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/users.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/connection.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testing/extraction-test.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testing/random-samples-to-test-against/2021-12-30 08:51:38/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testing/random-samples-to-test-against/2021-12-30 08:51:38/epistemic-testing.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testing/random-samples-to-test-against/2021-12-30 08:51:38/stative-testing.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testing/random-samples-to-test-against/2021-12-30 08:51:38/volitional-testing.csv" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,6 +83,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/analysis/.ipynb_checkpoints" />
       <recent name="$PROJECT_DIR$/src/analysis" />
       <recent name="$PROJECT_DIR$/src/utils" />
@@ -208,6 +222,8 @@
       <workItem from="1676990765003" duration="15842000" />
       <workItem from="1677031039380" duration="10000" />
       <workItem from="1677076005473" duration="9679000" />
+      <workItem from="1677171244991" duration="2637000" />
+      <workItem from="1677174709545" duration="7204000" />
     </task>
     <servers />
   </component>

@@ -1,7 +1,7 @@
 import json
 from logging import getLogger
 from pathlib import Path
-from twitter_data import TwitterData, Tweets, Users, Places
+from src.twitter_data import TwitterData, Tweets, Users, Places
 
 
 logger = getLogger(__name__)

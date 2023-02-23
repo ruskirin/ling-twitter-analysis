@@ -3,7 +3,8 @@ from logging import getLogger
 from decouple import config, UndefinedValueError
 from time import sleep
 from response import Response
-from utils import get_config, get_project_root, get_relative_to_proot
+import configs
+import files
 
 
 logger = getLogger(__name__)
@@ -14,10 +15,11 @@ class TwitterConnection:
     Single connection to the twitter api
 
     :param lang: specify language of connection
-    :param username: name of API key, formatted as
-       "<uppercase_username>_KEY=<key>" in a .env file
     :param is_archive: is this a 'Full-Archive Search'? If not, then is
-       'Recent Search'
+      'Recent Search'
+    :param key: raw string of Twitter API bearer token
+    :param key_name: name of .env variable that contains the desired bearer
+      token
     """
     def __init__(self,
                  lang: str,
@@ -25,10 +27,10 @@ class TwitterConnection:
                  key: str = None,
                  key_name: str = None):
 
-        # TODO 2/22: move configuration logic to utils/config.py
+        # TODO 2/22: move configuration logic to utils/configs.py
         #   and do all reading/writing from there
 
-        self.conf = get_config('conn')
+        self.conf = configs.read_conf('conn')
 
         self.lang = lang
         self.is_archive = is_archive
@@ -79,8 +81,9 @@ class TwitterConnection:
         # TODO 2/21: at the moment the saved batches vary in size and go over
         #   the requested amount, especially when batch_size is closer to 100
         #   as querying for 100 tweets isn't guaranteed to (and most of the time
-        #   doesn't) return exactly 100 tweets. Current accumulates the response
-        #   data unt
+        #   doesn't) return exactly 100 tweets. Current method accumulates the
+        #   response data until it is greater than @batch_size, at which point
+        #   it saves. Perhaps trim to requested @batch_size, and discard excess?
 
         """
         Make a series of .connect() calls until the desired @batch_size is reached
@@ -98,7 +101,7 @@ class TwitterConnection:
 
         logger.info(f'Starting pagination of: {query[0]}')
         logger.debug(f'Requested: {num_batches} batches of size {batch_size}'
-                     f'\nPagination save path: {get_relative_to_proot(save_path)}')
+                     f'\nPagination save path: {files.get_relative_to_proot(save_path)}')
 
         response = self.connect(query)
         tokens = 0
@@ -210,7 +213,7 @@ class TwitterConnection:
 if __name__ == '__main__':
     con = TwitterConnection('es', True, key_name='SECRET')
     con.paginate(
-        get_project_root()/'src',
+        files.get_project_root()/'src',
         query=('test', 'test'),
         batch_size=500,
         num_batches=2,
