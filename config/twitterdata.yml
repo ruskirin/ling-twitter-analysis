@@ -3,8 +3,9 @@ save_file:
 dtypes:
   twitter:
     regular:
+      id: UInt64
       tweet_id: UInt64
-      user_id: UInt64
+      author_id: UInt64
       tweet_place_id: string
       verbs: string
       text_orig: string

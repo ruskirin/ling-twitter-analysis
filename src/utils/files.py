@@ -1,6 +1,7 @@
 from pathlib import Path
 from logging import getLogger
 from datetime import datetime
+import csv
 import pandas as pd
 import regex as re
 import configs
@@ -63,12 +64,12 @@ def get_relative_to_proot(path) -> Path:
     return path.relative_to(get_project_root())
 
 
-def get_save_location(loc: str,
-                      corpus: str = '',
-                      is_test: bool = False,
-                      lang: str = 'es') -> Path:
+def get_save_path(loc: str,
+                  corpus: str = 'twitter',
+                  is_test: bool = False,
+                  lang: str = 'es') -> Path:
     """
-    Get filepath to the saved tweets
+    Get filepath to the saved data
 
     :param loc: 'e' extracted, 'c' cleaned, 'p' processed
     :param corpus: 'twitter' or 'corpes'
@@ -77,28 +78,33 @@ def get_save_location(loc: str,
       folder
     """
     dirs = {'e': 'extracted', 'c': 'cleaned', 'p': 'processed'}
-    from_locs = {'twitter', 'corpes'}
+    corpuses = {'twitter', 'corpes'}
 
-    data_path = get_project_root()/'data'
-    if loc not in dirs.keys():
+    try:
+        if loc not in dirs.keys():
+            raise ValueError(f'@loc "{loc}" is not in one of ({list(dirs.keys())})')
+        if corpus not in corpuses:
+            raise ValueError(f'@corpus "{corpus}" is not one of ({corpuses})')
+
+        data_path = get_project_root()\
+                    / 'data'\
+                    / dirs[loc]\
+                    / ('saved' if not is_test else 'test')\
+                    / corpus\
+                    / lang
+
         return data_path
 
-    data_path = data_path / dirs[loc] / ('saved' if not is_test else 'test')
-    if (corpus not in from_locs) or is_test:
-        return data_path
-
-    data_path = data_path / corpus
-    if lang is None:
-        return data_path
-
-    return data_path/lang
+    except ValueError as e:
+        logger.exception(e.args)
+        raise
 
 
-def get_saved_data_path(loc,
-                        folder=None,
-                        corpus='twitter',
-                        is_test=False,
-                        lang='es') -> list[Path]:
+def choose_save_path(loc,
+                     folder=None,
+                     corpus='twitter',
+                     is_test=False,
+                     lang='es') -> list[Path]:
     """
     Get path (or a list of paths) to a directory with saved data
 
@@ -111,10 +117,7 @@ def get_saved_data_path(loc,
     :param lang: language; one of {es, pt}
     :return: Path object
     """
-    if loc not in {'e', 'c', 'p'}:
-        raise ValueError(f'"{loc}" must be one of: "e", "c", "p"')
-
-    dir = get_save_location(loc, corpus, is_test, lang)
+    dir = get_save_path(loc, corpus, is_test, lang)
     if folder is not None:
         if folder == 'all':
             return list(dir.iterdir())

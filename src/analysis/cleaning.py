@@ -4,7 +4,6 @@ import regex
 import pandas as pd
 from pathlib import Path
 from unidecode import unidecode
-import utils as u
 
 
 logger = logging.getLogger(__name__)
@@ -23,9 +22,6 @@ logger = logging.getLogger(__name__)
 
 def update_ids(dir: Path, id_col: str, data_type: str) -> (int, set):
     """
-    TODO: update pd.read_csv() to optimized utils.get_csv() when fixed
-
-
     Extract all unique @id entries from all CSV files in @dir and append to
       respective <@data_type>.txt file in ../lin-que-dropping/data/ids/ .
       Returns a set of duplicated ids which already existed in the text file.
@@ -203,6 +199,6 @@ def separate_by_verb():
 
 if __name__ == '__main__':
     n, dupes = update_ids(data_type='tweets',
-                     dir=u.get_saved_data_path('e','2023-02-08-at-23:05:39/tweets/'),
-                     id_col='tweet_id')
+                          dir=u.choose_save_path('e', '2023-02-08-at-23:05:39/tweets/'),
+                          id_col='tweet_id')
     print(n, len(dupes))

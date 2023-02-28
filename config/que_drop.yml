@@ -21,6 +21,7 @@ dependencies:
   - spacy-transformers
   - python-decouple
   - openpyxl
+  - pytest
   - pip
   - pip:
     - spacy-lookups-data

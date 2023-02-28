@@ -1,15 +1,16 @@
 import regex as re
 import pandas as pd
+import csv
 from logging import getLogger
 from pathlib import Path
 from numpy import ceil, array_split
 import files
 import configs
+import pytest
 
 
 # TODO 2/23: not sure if this should stay global here, be made into an
 #  attribute, or become a global variable elsewhere
-
 logger = getLogger(__name__)
 conf = configs.get_yaml(files.get_project_root() / 'config' / 'twitterdata.yml')
 gconf = configs.read_conf()
@@ -23,7 +24,8 @@ class TwitterData:
                  topic: str,
                  lang: str):
 
-        self.data = data
+        self.dtype = type(self).__name__.lower()
+        self.data = self._remove_dups(data)
 
         # dataframe name used when saving and retrieving
         self.topic = topic
@@ -36,6 +38,85 @@ class TwitterData:
     def set_topic(self, topic, lang):
         name = conf['save_file']['twitter'].format(topic, lang)
         self.topic = name
+
+    def update_ids(self, id_path: Path = None):
+
+        # TODO 2/28: add some exception handling here. eg. verify that @id_path
+        #   points to a valid file
+
+        """
+        Update the global set of ids as specified in the general configuration
+          (if @id_path is None, otherwise update the set in @id_path).
+        :param id_path: (optional) Path object to CSV file holding set of ids
+        """
+        if id_path is None:
+            id_path = files.get_project_root() \
+                      / gconf['file_paths']['twitter_ids'] \
+                      / (self.dtype + '.csv')
+
+        try:
+            gids = self._read_ids()
+            data = self._remove_ids(gids)
+
+            dids = set(data['id'].unique())
+            self._write_ids(dids)
+            self.data = data
+
+        except Exception as e:
+            logger.exception(e.args)
+            raise
+
+    def _remove_ids(self, ids: set):
+        """
+        Remove entries from @self.data where 'id' is in @ids
+        """
+        d_ids = set(self.data['id'].unique().astype(str))
+
+        dup_ids = ids.intersection(d_ids)
+
+        logger.debug(f'Found {len(dup_ids)} existing entries.')
+
+        dups = self.data.loc[self.data['id'].isin(dup_ids), :].index
+        df = self.data.drop(index=dups).reset_index(drop=True)
+
+        logger.debug(f'Returning {self.dtype} with {df.shape[0]} unique entries.')
+
+        return df
+
+    def _remove_dups(self, data: pd.DataFrame, subset='id'):
+        """Remove duplicated entries from @data dataframe"""
+        d = data.drop_duplicates(subset=subset, ignore_index=True)
+        diff = data.shape[0] - d.shape[0]
+
+        logger.debug(f'Removed {diff} duplicated {self.dtype} entries')
+        return d
+
+    def _read_ids(self, path: Path = None) -> set:
+        """Read the tallied data ids"""
+        if path is None:
+            path = files.get_project_root() \
+                / gconf['file_paths']['twitter_ids'] \
+                / (self.dtype + '.csv')
+
+        with open(path, newline='') as f:
+            reader = csv.reader(f, delimiter=',', quotechar='"')
+            ids = set([r for r in reader][0])
+            return ids
+
+    def _write_ids(self, ids: set, path: Path = None):
+        """Save the set of ids"""
+        if path is None:
+            path = files.get_project_root() \
+                   / gconf['file_paths']['twitter_ids'] \
+                   / (self.dtype + '.csv')
+
+        ids = list(ids)
+
+        with open(path, 'w', newline='') as f:
+            writer = csv.writer(f, delimiter=',', quotechar='"')
+            writer.writerow(ids)
+
+            logger.info(f'Updated {self.dtype} ids; total: {len(ids)}')
 
     def rename_cols(self, changes):
         try:
@@ -194,6 +275,7 @@ class TwitterData:
                 on_bad_lines='warn'
             )
             return cls(data, topic, lang)
+
         except KeyError as e:
             logger.exception(f'Configuration file does not have the passed keys'
                              f'\n{e.args}')
@@ -205,15 +287,6 @@ class TwitterData:
     @classmethod
     def from_json(cls, json_data, topic, lang):
         return cls(pd.json_normalize(json_data), topic, lang)
-
-    def remove_dups(self, subset: str):
-        logger.debug(f'Removing duplicates; '
-                      f'originally {self.data.shape[0]} entries')
-        dups = self.data.duplicated(subset=subset)
-        self.data = self.data.drop(self.data[dups].index)
-
-        logger.debug(f'Found {dups.sum()} duplicates.'
-                      f'\n{self.data.shape[0]} remaining after drop')
 
 
 def convert_dtypes(df: pd.DataFrame, type_map: dict) -> pd.DataFrame:
@@ -253,7 +326,9 @@ def extract_verb_from_filename(path: Path):
 
 
 if __name__ == '__main__':
-    path = files.get_saved_data_path('e')[0] / 'tweets' / 'es-acordar-original-tweets-0-597.csv'
+    path = files.choose_save_path('e')[0] \
+           / 'tweets' \
+           / 'sample-es-twitter-decir-tweets-1-589.csv'
     d = TwitterData.from_csv(path, 'es')
-    print(d.topic)
-    d.save_csv(path.parent,name_scheme='sample.csv')
+
+    d.update_ids()

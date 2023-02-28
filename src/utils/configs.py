@@ -1,5 +1,5 @@
 import yaml
-from files import get_project_root
+import files
 from pathlib import Path
 from logging import getLogger
 
@@ -38,7 +38,7 @@ def read_conf(conf_type='g') -> dict | None:
         raise ValueError(f'Must pass valid @conf_type; one of: \n{types.items()}')
 
     try:
-        config_path = get_project_root()/'config'/f'{types[conf_type]}_config.yml'
+        config_path = files.get_project_root()/'config'/f'{types[conf_type]}_config.yml'
         return get_yaml(config_path)
     except Exception as e:
         logger.exception(f'Failed to open config file! {e.args}')
@@ -55,7 +55,7 @@ def update_conf(conf: dict, conf_type: str) -> dict:
     :return: configuration file dictionary
     """
     try:
-        path = get_project_root()/'config'/f'{types[conf_type]}_config.yml'
+        path = files.get_project_root()/'config'/f'{types[conf_type]}_config.yml'
         with open(path, 'w') as f:
             yaml.dump(conf, f)
 

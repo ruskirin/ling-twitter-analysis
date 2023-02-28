@@ -3,7 +3,7 @@ csv_sep: '~'
 file_paths:
   # Paths from project root 
   verb_conjug: 'data/ES-verbs-conjugations.xlsx'
-  ids: 'data/ids'
+  twitter_ids: 'data/ids/twitter'
 formats:
   date: '%Y-%m-%d'
   time: '%H:%M:%S'

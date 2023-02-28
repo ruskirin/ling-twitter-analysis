@@ -3,6 +3,7 @@ from logging import getLogger
 from emoji import replace_emoji
 from unidecode import unidecode
 from src.twitter_data.twitter_data import TwitterData
+import files
 
 logger = getLogger(__name__)
 
@@ -10,12 +11,6 @@ logger = getLogger(__name__)
 class Tweets(TwitterData):
     def __init__(self, data, topic, lang):
         super().__init__(data, topic, lang)
-
-        # if data is not None:
-        #     # Change column names
-        #     self.rename(conf['rename_maps']['tweets'])
-        #     # Append a column with normalized text
-        #     self.data = pd.concat([self.data, self.normalize(data)], axis=1)
 
     def normalize(self, data):
         return data.loc[:, 'text_orig']\
@@ -31,15 +26,11 @@ class Tweets(TwitterData):
         # Props to: https://stackoverflow.com/a/50602709/13557629
         return replace_emoji(r'', t)
 
-    # TODO: old extension of from_csv() from previous version. Normalization
-    #   was performed prior to saving raw data... necessary?
-    #
-    # @classmethod
-    # def from_csv(cls, path, sep, original, *additional):
-    #     t = super().from_csv(path, sep, original)
-    #
-    #     try:
-    #         t.normalized = pd.read_csv(path+additional[0], sep=sep)
-    #         return t
-    #     except Exception as e:
-    #         print(f'Error reading CSV!')
+
+if __name__ == '__main__':
+    path = files.choose_save_path('e')[0] \
+           / 'tweets' \
+           / 'es-twitter-decir-tweets-1-589.csv'
+    d = Tweets.from_csv(path, 'es')
+
+    d.update_ids()
