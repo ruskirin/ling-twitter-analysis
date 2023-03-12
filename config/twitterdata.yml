@@ -4,6 +4,7 @@ dtypes:
   twitter:
     regular:
       id: UInt64
+      created_at: datetime64
       tweet_id: UInt64
       author_id: UInt64
       tweet_place_id: string
@@ -21,8 +22,6 @@ dtypes:
       public_metrics.like_count: UInt32
       public_metrics.quote_count: UInt32
       public_metrics.impression_count: UInt32
-    dates:
-      - created_at
   corpes:
     regular:
       BIBLIOGRAFÍA: string

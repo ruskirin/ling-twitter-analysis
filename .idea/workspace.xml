@@ -5,18 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28a4ad1d-c401-42ea-ad76-8f8aff8e60d4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_twitter_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/lin-que-dropping.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/lin-que-dropping.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/general_config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/general_config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/que_drop.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/que_drop.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/twitterdata.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/twitterdata.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/analysis/cleaning.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/cleaning.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/twitter-analysis.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/twitter-analysis.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/analysis/twitter-cleaning.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/twitter-cleaning.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tests/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_connection/twitter-extracting.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/twitter-extracting.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_data/places.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/places.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/twitter_data/tweets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/tweets.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/twitter_data/twitter_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/twitter_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_data/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/users.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/configs.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/configs.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/files.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/files.py" afterDir="false" />
     </list>
@@ -227,7 +224,11 @@
       <workItem from="1677174709545" duration="8695000" />
       <workItem from="1677250368638" duration="11703000" />
       <workItem from="1677273963082" duration="85000" />
-      <workItem from="1677592578327" duration="21448000" />
+      <workItem from="1677592578327" duration="23187000" />
+      <workItem from="1677689160632" duration="21000" />
+      <workItem from="1678407195965" duration="10608000" />
+      <workItem from="1678538564776" duration="655000" />
+      <workItem from="1678639384183" duration="5000" />
     </task>
     <servers />
   </component>

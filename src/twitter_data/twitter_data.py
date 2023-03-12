@@ -19,13 +19,9 @@ gconf = configs.read_conf()
 # TODO 2/23: perhaps extend pandas.DataFrame instead of creating a wrapper
 #   around it?
 class TwitterData:
-    def __init__(self,
-                 data: pd.DataFrame,
-                 topic: str,
-                 lang: str):
-
+    def __init__(self, data: pd.DataFrame, topic: str, lang: str):
         self.dtype = type(self).__name__.lower()
-        self.data = self._remove_dups(data)
+        self.data = data
 
         # dataframe name used when saving and retrieving
         self.topic = topic
@@ -44,6 +40,14 @@ class TwitterData:
         # TODO 2/28: add some exception handling here. eg. verify that @id_path
         #   points to a valid file
 
+        # TODO 2/28: will not work with extracted 'twitterdata' files as those
+        #   do not have an 'id' column. Handle those cases!
+
+        # TODO 3/10: _remove_dups() removed from __init__(); see when/where it
+        #   should be used; NOTE: not necessary for update_ids() as
+        #   _remove_ids() only looks at unique ids from self.data -- duplicates
+        #   are not double registered
+
         """
         Update the global set of ids as specified in the general configuration
           (if @id_path is None, otherwise update the set in @id_path).
@@ -54,12 +58,14 @@ class TwitterData:
                       / gconf['file_paths']['twitter_ids'] \
                       / (self.dtype + '.csv')
 
+
+
         try:
             gids = self._read_ids()
             data = self._remove_ids(gids)
 
             dids = set(data['id'].unique())
-            self._write_ids(dids)
+            self._write_ids(dids, path=id_path)
             self.data = data
 
         except Exception as e:
@@ -93,23 +99,13 @@ class TwitterData:
 
     def _read_ids(self, path: Path = None) -> set:
         """Read the tallied data ids"""
-        if path is None:
-            path = files.get_project_root() \
-                / gconf['file_paths']['twitter_ids'] \
-                / (self.dtype + '.csv')
-
         with open(path, newline='') as f:
             reader = csv.reader(f, delimiter=',', quotechar='"')
             ids = set([r for r in reader][0])
             return ids
 
-    def _write_ids(self, ids: set, path: Path = None):
+    def _write_ids(self, ids: set, path: Path):
         """Save the set of ids"""
-        if path is None:
-            path = files.get_project_root() \
-                   / gconf['file_paths']['twitter_ids'] \
-                   / (self.dtype + '.csv')
-
         ids = list(ids)
 
         with open(path, 'w', newline='') as f:
@@ -247,15 +243,13 @@ class TwitterData:
 
         :param path: path to CSV
         :param lang: language of dataset ('es' or 'pt')
-        :param topic: name to give the dataframe; used when writing to file
+        :param topic: (optional) name to give the dataframe; used when writing to file
         :param columns: (optional) list of columns to load from CSV
-        :param sep: separator used in CSV (default: '~')
         :param lineterminator: (optional) use '\n' if failing to read CSVs
         :return: dataframe
         """
         try:
             dtypes = conf['dtypes']['twitter']['regular']
-            dates = conf['dtypes']['twitter']['dates']
             sep = gconf['csv_sep']
 
             if topic is None:
@@ -269,7 +263,6 @@ class TwitterData:
                 path,
                 usecols=columns,
                 dtype=dtypes,
-                parse_dates=dates,
                 sep=sep,
                 lineterminator=lineterminator,
                 on_bad_lines='warn'

@@ -17,7 +17,7 @@ types = {'g': 'general',
 def get_yaml(path: Path):
     """Return the contents of a yaml file"""
     try:
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding='utf8') as f:
             logger.info(f'Opened config file: {path.stem}')
             return yaml.safe_load(f)
 

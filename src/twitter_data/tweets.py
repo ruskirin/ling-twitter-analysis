@@ -1,15 +1,18 @@
 import re
 from logging import getLogger
+
+import pandas as pd
 from emoji import replace_emoji
 from unidecode import unidecode
-from src.twitter_data.twitter_data import TwitterData
+from twitter_data import TwitterData
 import files
+
 
 logger = getLogger(__name__)
 
 
 class Tweets(TwitterData):
-    def __init__(self, data, topic, lang):
+    def __init__(self, data: pd.DataFrame, topic: str, lang: str):
         super().__init__(data, topic, lang)
 
     def normalize(self, data):

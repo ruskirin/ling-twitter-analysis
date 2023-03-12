@@ -1,7 +1,6 @@
 from pathlib import Path
 from logging import getLogger
 from datetime import datetime
-import csv
 import pandas as pd
 import regex as re
 import configs
@@ -10,7 +9,7 @@ import configs
 logger = getLogger(__name__)
 
 
-def get_str_datetime_now(date: bool=True, time: bool=True):
+def get_str_datetime_now(date: bool = True, time: bool = True):
     """
     Get datetime at time of this function's call; used for directory and file
     naming. Format used is defined in the general config. Will return None if

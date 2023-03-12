@@ -1,5 +1,5 @@
 from logging import getLogger
-from src.twitter_data.twitter_data import TwitterData
+from twitter_data import TwitterData
 
 logger = getLogger(__name__)
 
