@@ -5,17 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28a4ad1d-c401-42ea-ad76-8f8aff8e60d4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/lin-que-dropping.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/lin-que-dropping.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/twitterdata.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/twitterdata.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/analysis/twitter-analysis.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/twitter-analysis.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/analysis/twitter-cleaning.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/twitter-cleaning.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_data/places.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/places.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_data/tweets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/tweets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_data/twitter_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/twitter_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/twitter_data/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/users.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/configs.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/configs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/files.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/files.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/logs.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/logs.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -229,6 +220,11 @@
       <workItem from="1678407195965" duration="10608000" />
       <workItem from="1678538564776" duration="655000" />
       <workItem from="1678639384183" duration="5000" />
+      <workItem from="1678963440979" duration="29000" />
+      <workItem from="1678990692502" duration="4000" />
+      <workItem from="1679330259496" duration="63000" />
+      <workItem from="1679330378889" duration="20000" />
+      <workItem from="1679330463459" duration="11000" />
     </task>
     <servers />
   </component>

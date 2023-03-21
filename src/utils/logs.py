@@ -1,14 +1,11 @@
 from datetime import datetime
 import logging
-
 import pandas
-
 import configs
 import files
 
 
 logger = logging.getLogger(__name__)
-
 
 def save_readme(location, text, append=True):
     op = 'a+' if append else 'w'
