@@ -109,7 +109,7 @@ class Response:
                     continue
 
                 if isinstance(data, TwitterData):
-                    data.save_csv(path, batch=batch, sep_by_type=True)
+                    data.save_csv(path, batch_num=batch, sep_by_type=True)
 
         except Exception as e:
             logger.exception(e.args)

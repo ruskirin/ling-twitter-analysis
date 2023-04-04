@@ -1,12 +1,12 @@
-import regex as re
 import pandas as pd
+from pandas.errors import ParserError
 import csv
 from logging import getLogger
 from pathlib import Path
 from numpy import ceil, array_split
+from datetime import datetime
 import files
 import configs
-import pytest
 
 
 # TODO 2/23: not sure if this should stay global here, be made into an
@@ -57,8 +57,6 @@ class TwitterData:
             id_path = files.get_project_root() \
                       / gconf['file_paths']['twitter_ids'] \
                       / (self.dtype + '.csv')
-
-
 
         try:
             gids = self._read_ids()
@@ -132,147 +130,179 @@ class TwitterData:
         except Exception as e:
             print(f'Failed to append data! {e.args[0]}')
 
-    def save_csv(
+    def save(
             self,
             path: Path,
-            batch_data=False,
+            save_format,
+            name_scheme=None,
+            batch=False,
             batch_size=1000,
-            batch=None,
-            sep_by_type=False,
-            name_scheme=None):
+            batch_num=None,
+            sep_by_type=False) -> list[Path]:
         """
-        Save a dataframe as a CSV; option to batch into multiple files
+        Save @self.data into data format specified by @save_format:
+          {filename format}
+          -{batch number(optional)}
+          -{dataframe/batch size}.xlsx
 
         :param path: location to save
-        :param batch_data: batch the dataframe? (bool)
-        :param batch_size: batch size if batch == True
-        :param batch: (optional) batch number to append to filename
-        :param name_scheme: (optional) alternate name to use when saving
+        :param save_format: one of {"csv", "excel"}
+        :param name_scheme: (optional) alternate filename to use when saving
+        :param batch: (def: False) separate dataframe into batches?
+        :param batch_size: (if @batch == True) batch size
+        :param batch_num: (optional) batch number to append to filename
+        :param sep_by_type: (def: False) save into its type directory
+          (ie. tweets, twitterdata, etc)
+        :return: path of saved data
         """
 
-        # TODO 2/21: split this method up; way past having a single
-        #  responsibility. Also the separate batching and also single saving
-        #  using @page seems excessive. Thinking perhaps create separate methods
-        #  for different types of operations? eg. extraction_save(), clean_save(),
-        #  etc...?
-
         try:
-            sep = gconf['csv_sep']
+            save_paths = []
             data_type = type(self).__name__.lower()
+            sep = gconf['csv_sep']
 
             if sep_by_type:
                 path = files.make_dir(path, data_type)
 
-            if name_scheme is None:
-                # format the filename as specified in config file
-                name_scheme = conf['save_file']['twitter'].format(
-                    lang=self.lang,
-                    verb=self.topic,
-                    data_type=data_type
+            if not batch:
+                name = self._format_filename(
+                    name_scheme, save_format, batch_num, batch_size
                 )
+                if save_format == 'csv':
+                    self.data.to_csv(path / name, sep=sep, index=False)
+                else:
+                    self.data.to_excel(path / name, index=False)
 
-            # Remove the file format for now as need to append dataframe size
-            if name_scheme[-4:] == '.csv':
-                name_scheme = name_scheme[:-4]
-
-            if batch is not None:
-                name_scheme = f'{name_scheme}-{batch}'
-
-            if not batch_data:
-                name = f'{name_scheme}-{self.shape[0]}.csv'
-                self.data.to_csv(path / name, sep=sep, index=False)
-                logger.info(f'Saved dataframe ({name_scheme}) CSV into: '
+                logger.info(f'Saved dataframe ({name_scheme}) excel sheet into: '
                             f'{files.get_relative_to_proot(path)}')
+
+                save_paths.append(path/name)
+
             else:
                 bins = ceil(self.shape[0] / batch_size)
                 # Split into batches of approximately the specified batch size
                 for i, b in enumerate(array_split(self.data, bins)):
-                    name = f'{name_scheme}-{i}-{b.shape[0]}.csv'
-                    b.to_csv(path / name, sep=sep, index=False)
+                    name = self._format_filename(
+                        name_scheme, save_format, i, b.shape[0]
+                    )
+                    if save_format == 'csv':
+                        b.to_csv(path / name, sep=sep, index=False)
+                    else:
+                        b.to_excel(path / name, index=False)
+
+                    save_paths.append(path/name)
 
                 logger.info(f'Saved {bins} dataframes into: '
                             f'{files.get_relative_to_proot(path)}')
+
+            return save_paths
+
         except KeyError as e:
             logger.exception(f'Invalid key in config file:\n{e.args}')
             raise
-        except ValueError as e:
-            logger.info(f'Saved file(s) into: .../{path.name}')
         except Exception as e:
-            logger.exception(f'Problems saving data to CSV:\n{e.args}')
+            logger.exception(f'Problems saving data to {save_format}:\n{e.args}')
             raise
 
-    @classmethod
-    # def save_excel(
-    #         cls,
-    #         path: Path,
-    #         df: DataFrame,
-    #         name_scheme,
-    #         batch=False,
-    #         batch_size=1000):
-    #     try:
-    #         if not batch:
-    #             name = name_scheme
-    #             if '.xlsx' not in name_scheme:
-    #                 name = name + '.xlsx'
-    #
-    #             df.to_excel(path / name, index=False)
-    #             logger.info(
-    #                 f'Saved dataframe ({name_scheme}) xlsx into: {path}'
-    #                 )
-    #         else:
-    #             bins = ceil(df.shape[0] / batch_size)
-    #             # Split into batches of approximately the specified batch size
-    #             for i, b in enumerate(array_split(df, bins)):
-    #                 name = f'{name_scheme}-{i}-{b.shape[0]}.xlsx'
-    #                 b.to_excel(path / name, index=False)
-    #
-    #             logger.info(f'Saved {bins} files into: {path}')
-    #     except Exception as e:
-    #         logger.exception(e.args)
-    #         print(f'Problems saving data as .xlsx!')
+    def _format_filename(
+            self,
+            name_scheme: str,
+            save_format: str,
+            batch_num: int|None,
+            batch_size: int|None):
+        """
+        Create a standardized filename to use for saving data
+        :param name_scheme:
+        :param save_format: one of {"csv", "excel"}
+        :param batch_num:
+        :param batch_size:
+        """
+        data_type = type(self).__name__.lower()
+        if save_format == 'csv':
+            ext = '.csv'
+        elif save_format == 'excel':
+            ext = '.xlsx'
+        else:
+            raise ValueError(f'Invalid save format ({save_format})')
+
+        if name_scheme is None:
+            # format the filename as specified in config file
+            name_scheme = conf['save_file']['twitter'].format(
+                lang=self.lang,
+                verb=self.topic,
+                data_type=data_type
+            )
+
+        # Remove the file format to append dataframe size
+        name_scheme = Path(name_scheme).stem
+
+        if batch_num is not None:
+            name_scheme = f'{name_scheme}-{batch_num}'
+
+        if batch_size is not None:
+            name_scheme = f'{name_scheme}-{self.shape[0]}'
+
+        return name_scheme + ext
 
     @classmethod
     def from_csv(cls,
                  path: Path,
                  lang,
                  topic=None,
-                 columns: list = None,
+                 subset: list = None,
+                 dtypes: dict = None,
+                 dates: list = None,
                  lineterminator=None):
         """
         Optimized version utilizing pandas.read_csv() with dtypes specified
 
         :param path: path to CSV
         :param lang: language of dataset ('es' or 'pt')
-        :param topic: (optional) name to give the dataframe; used when writing to file
-        :param columns: (optional) list of columns to load from CSV
+        :param topic: (optional) name to give the dataframe; used when writing
+          to file
+        :param subset: (optional) subset of the columns to return
+        :param dtypes: (optional) dict of {column: dtype}; used to pass custom
+          dtype specs for "unconventional" dataframes
+        :param dates: (optional) list of date columns to parse
         :param lineterminator: (optional) use '\n' if failing to read CSVs
         :return: dataframe
         """
-        try:
+        date_formats = conf['date_formats']
+        sep = gconf['csv_sep']
+
+        if dtypes is None:
             dtypes = conf['dtypes']['twitter']['regular']
-            sep = gconf['csv_sep']
+        if dates is None:
+            dates = conf['dtypes']['twitter']['dates']
 
+        if topic is None:
+            # Attempt to identify topic (aka verb of interest) from filename
+            topic = extract_verb_from_filename(path)
             if topic is None:
-                # Attempt to identify topic from filename
-                topic = extract_verb_from_filename(path)
-                if topic is None:
-                    raise ValueError(f'Cannot identify dataframe topic from '
-                                     f'filename -- pass into @topic')
+                raise ValueError(f'Cannot identify dataframe topic from '
+                                 f'filename -- pass into @topic')
 
-            data = pd.read_csv(
-                path,
-                usecols=columns,
-                dtype=dtypes,
-                sep=sep,
-                lineterminator=lineterminator,
-                on_bad_lines='warn'
+        data = pd.read_csv(
+            path,
+            usecols=subset,
+            dtype=dtypes,
+            sep=sep,
+            lineterminator=lineterminator,
+            on_bad_lines='warn'
+        )
+
+        try:
+            data.loc[:, dates] = data.loc[:, dates].apply(
+                pd.to_datetime, format=date_formats['cleaned']
             )
-            return cls(data, topic, lang)
 
-        except KeyError as e:
-            logger.exception(f'Configuration file does not have the passed keys'
-                             f'\n{e.args}')
-            raise
+            return cls(data, topic, lang)
+        except ParserError:
+            data.loc[:, dates] = data.loc[:, dates].apply(
+                pd.to_datetime, format=date_formats['extracted']
+            )
+
+            return cls(data, topic, lang)
         except ValueError as e:
             logger.exception(f'Passed an invalid argument: \n{e.args}')
             raise
@@ -283,6 +313,9 @@ class TwitterData:
 
 
 def convert_dtypes(df: pd.DataFrame, type_map: dict) -> pd.DataFrame:
+    # TODO 4/3/2023: see if method is necessary - if so, update
+
+    """Assign appropriate dtypes to each column"""
     logger.debug(f'Converting dataframe column dtypes as:\n{type_map}')
     drop = []
 
@@ -319,9 +352,14 @@ def extract_verb_from_filename(path: Path):
 
 
 if __name__ == '__main__':
-    path = files.choose_save_path('e')[0] \
-           / 'tweets' \
-           / 'sample-es-twitter-decir-tweets-1-589.csv'
-    d = TwitterData.from_csv(path, 'es')
+    s1 = files.get_save_path('e')
+    s2 = files.get_save_path('e')/'2021-11-07-at-22:10:00'
+    p1 = s2/'es-parecer-original-tweets-10083-0.csv'
 
-    d.update_ids()
+    d = TwitterData.from_csv(p1, 'es')
+    d.save(s1/'sample.xlsx', 'excel')
+
+    d2 = TwitterData.from_csv(p1, 'es')
+
+    print(d.data['created_at'])
+    print(d.data.info())

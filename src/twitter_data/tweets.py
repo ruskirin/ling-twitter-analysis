@@ -31,9 +31,13 @@ class Tweets(TwitterData):
 
 
 if __name__ == '__main__':
-    path = files.choose_save_path('e')[0] \
-           / 'tweets' \
-           / 'es-twitter-decir-tweets-1-589.csv'
-    d = Tweets.from_csv(path, 'es')
+    s1 = files.get_save_path('e')
+    s2 = files.get_save_path('e') / '2021-11-07-at-22:10:00'
+    p1 = s2 / 'es-parecer-original-tweets-10083-0.csv'
 
-    d.update_ids()
+    d = Tweets.from_csv(p1, 'es')
+    dp = d.save(s1, 'csv', name_scheme='sample')[0]
+
+    d2 = Tweets.from_csv(dp, 'es', topic='sample')
+
+    print(d.data.equals(d2.data))
