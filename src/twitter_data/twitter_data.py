@@ -293,14 +293,20 @@ class TwitterData:
 
         try:
             data.loc[:, dates] = data.loc[:, dates].apply(
-                pd.to_datetime, format=date_formats['cleaned']
+                pd.to_datetime, format=date_formats['cleaned'], utc=True
             )
+            # Remove timezone information as it conflicts with saving in Excel
+            for d in dates:
+                data[d] = data[d].dt.tz_localize(None)
 
             return cls(data, topic, lang)
         except ParserError:
             data.loc[:, dates] = data.loc[:, dates].apply(
-                pd.to_datetime, format=date_formats['extracted']
+                pd.to_datetime, format=date_formats['extracted'], utc=True
             )
+            # Remove timezone information as it conflicts with saving in Excel
+            for d in dates:
+                data[d] = data[d].dt.tz_localize(None)
 
             return cls(data, topic, lang)
         except ValueError as e:
@@ -352,14 +358,4 @@ def extract_verb_from_filename(path: Path):
 
 
 if __name__ == '__main__':
-    s1 = files.get_save_path('e')
-    s2 = files.get_save_path('e')/'2021-11-07-at-22:10:00'
-    p1 = s2/'es-parecer-original-tweets-10083-0.csv'
-
-    d = TwitterData.from_csv(p1, 'es')
-    d.save(s1/'sample.xlsx', 'excel')
-
-    d2 = TwitterData.from_csv(p1, 'es')
-
-    print(d.data['created_at'])
-    print(d.data.info())
+    pass
