@@ -88,7 +88,7 @@ class Response:
             else:
                 self.tables[t_type].append(table)
 
-        logger.debug(f'After append: {self.tables["data"].data.shape[0]}')
+        logger.debug(f'After append: {self.tables["data"].d.shape[0]}')
 
     def reset_index(self):
         if len(self.tables)==0:

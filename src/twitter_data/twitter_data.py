@@ -21,7 +21,7 @@ gconf = configs.read_conf()
 class TwitterData:
     def __init__(self, data: pd.DataFrame, topic: str, lang: str):
         self.dtype = type(self).__name__.lower()
-        self.data = data
+        self.d = data
 
         # dataframe name used when saving and retrieving
         self.topic = topic
@@ -29,92 +29,51 @@ class TwitterData:
 
     @property
     def shape(self):
-        return self.data.shape
+        return self.d.shape
 
     def set_topic(self, topic, lang):
         name = conf['save_file']['twitter'].format(topic, lang)
         self.topic = name
 
-    def update_ids(self, id_path: Path = None):
+    def update_ids(
+            self,
+            id_read_path: Path = None,
+            id_write_path: Path = None):
 
         # TODO 2/28: add some exception handling here. eg. verify that @id_path
         #   points to a valid file
-
         # TODO 2/28: will not work with extracted 'twitterdata' files as those
         #   do not have an 'id' column. Handle those cases!
-
-        # TODO 3/10: _remove_dups() removed from __init__(); see when/where it
-        #   should be used; NOTE: not necessary for update_ids() as
-        #   _remove_ids() only looks at unique ids from self.data -- duplicates
-        #   are not double registered
 
         """
         Update the global set of ids as specified in the general configuration
           (if @id_path is None, otherwise update the set in @id_path).
-        :param id_path: (optional) Path object to CSV file holding set of ids
+        :param id_read_path: (optional) Path object to CSV file holding set of ids
+        :param id_write_path: (optional) Path to write updated ids
         """
-        if id_path is None:
-            id_path = files.get_project_root() \
-                      / gconf['file_paths']['twitter_ids'] \
-                      / (self.dtype + '.csv')
+        if id_read_path is None:
+            id_read_path = files.get_project_root() \
+                           / gconf['file_paths']['twitter_ids'] \
+                           / (self.dtype + '.csv')
 
-        try:
-            gids = self._read_ids()
-            data = self._remove_ids(gids)
+        existing_ids = self._read_ids(id_read_path)
+        # Remove any records whose id is already present in the id file
+        self.d = self._remove_ids(existing_ids)
 
-            dids = set(data['id'].unique())
-            self._write_ids(dids, path=id_path)
-            self.data = data
+        # Write the updated
+        self._write_ids(
+            existing_ids,
+            path=id_read_path if id_write_path is None else id_write_path
+        )
 
-        except Exception as e:
-            logger.exception(e.args)
-            raise
-
-    def _remove_ids(self, ids: set):
-        """
-        Remove entries from @self.data where 'id' is in @ids
-        """
-        d_ids = set(self.data['id'].unique().astype(str))
-
-        dup_ids = ids.intersection(d_ids)
-
-        logger.debug(f'Found {len(dup_ids)} existing entries.')
-
-        dups = self.data.loc[self.data['id'].isin(dup_ids), :].index
-        df = self.data.drop(index=dups).reset_index(drop=True)
-
-        logger.debug(f'Returning {self.dtype} with {df.shape[0]} unique entries.')
-
-        return df
-
-    def _remove_dups(self, data: pd.DataFrame, subset='id'):
-        """Remove duplicated entries from @data dataframe"""
-        d = data.drop_duplicates(subset=subset, ignore_index=True)
-        diff = data.shape[0] - d.shape[0]
-
-        logger.debug(f'Removed {diff} duplicated {self.dtype} entries')
-        return d
-
-    def _read_ids(self, path: Path = None) -> set:
-        """Read the tallied data ids"""
-        with open(path, newline='') as f:
-            reader = csv.reader(f, delimiter=',', quotechar='"')
-            ids = set([r for r in reader][0])
-            return ids
-
-    def _write_ids(self, ids: set, path: Path):
-        """Save the set of ids"""
-        ids = list(ids)
-
-        with open(path, 'w', newline='') as f:
-            writer = csv.writer(f, delimiter=',', quotechar='"')
-            writer.writerow(ids)
-
-            logger.info(f'Updated {self.dtype} ids; total: {len(ids)}')
+        new_ids = self.d['id'].to_numpy()
+        logger.info(f'Updated {self.dtype} ids: '
+                    f'previous ({len(existing_ids)}), '
+                    f'new ({len(new_ids)})')
 
     def rename_cols(self, changes):
         try:
-            self.data.rename(columns=changes, inplace=True)
+            self.d.rename(columns=changes, inplace=True)
         except KeyError as e:
             print(f"Failed to identify passed columns to rename! \n{e.args[0]}")
 
@@ -122,8 +81,8 @@ class TwitterData:
         assert isinstance(other, type(self)), 'Cannot append data!'
 
         try:
-            self.data = pd.concat(
-                [self.data, other.data],
+            self.d = pd.concat(
+                [self.d, other.d],
                 axis=0,
                 ignore_index=True
             )
@@ -169,9 +128,9 @@ class TwitterData:
                     name_scheme, save_format, batch_num, batch_size
                 )
                 if save_format == 'csv':
-                    self.data.to_csv(path / name, sep=sep, index=False)
+                    self.d.to_csv(path / name, sep=sep, index=False)
                 else:
-                    self.data.to_excel(path / name, index=False)
+                    self.d.to_excel(path / name, index=False)
 
                 logger.info(f'Saved dataframe ({name_scheme}) excel sheet into: '
                             f'{files.get_relative_to_proot(path)}')
@@ -181,7 +140,7 @@ class TwitterData:
             else:
                 bins = ceil(self.shape[0] / batch_size)
                 # Split into batches of approximately the specified batch size
-                for i, b in enumerate(array_split(self.data, bins)):
+                for i, b in enumerate(array_split(self.d, bins)):
                     name = self._format_filename(
                         name_scheme, save_format, i, b.shape[0]
                     )
@@ -292,21 +251,25 @@ class TwitterData:
         )
 
         try:
-            data.loc[:, dates] = data.loc[:, dates].apply(
-                pd.to_datetime, format=date_formats['cleaned'], utc=True
-            )
-            # Remove timezone information as it conflicts with saving in Excel
-            for d in dates:
-                data[d] = data[d].dt.tz_localize(None)
+            # Check if @dates columns in @data
+            if set(dates).issubset(data.columns):
+                data.loc[:, dates] = data.loc[:, dates].apply(
+                    pd.to_datetime, format=date_formats['cleaned'], utc=True
+                )
+                # Remove timezone information as it conflicts with saving in Excel
+                for d in dates:
+                    data[d] = data[d].dt.tz_localize(None)
 
             return cls(data, topic, lang)
         except ParserError:
-            data.loc[:, dates] = data.loc[:, dates].apply(
-                pd.to_datetime, format=date_formats['extracted'], utc=True
-            )
-            # Remove timezone information as it conflicts with saving in Excel
-            for d in dates:
-                data[d] = data[d].dt.tz_localize(None)
+            # Check if @dates columns in @data
+            if set(dates).issubset(data.columns):
+                data.loc[:, dates] = data.loc[:, dates].apply(
+                    pd.to_datetime, format=date_formats['extracted'], utc=True
+                )
+                # Remove timezone information as it conflicts with saving in Excel
+                for d in dates:
+                    data[d] = data[d].dt.tz_localize(None)
 
             return cls(data, topic, lang)
         except ValueError as e:
@@ -316,6 +279,42 @@ class TwitterData:
     @classmethod
     def from_json(cls, json_data, topic, lang):
         return cls(pd.json_normalize(json_data), topic, lang)
+
+    def _remove_ids(self, ids: set):
+        """
+        Remove entries from @self.data where 'id' is in @ids
+        """
+        d_ids = set(self.d['id'].unique().astype(str))
+        dup_ids = ids.intersection(d_ids)
+
+        logger.debug(f'Found {len(dup_ids)} existing entries.')
+
+        dups = self.d.loc[self.d['id'].isin(dup_ids), :].index
+        df = self.d.drop(index=dups).reset_index(drop=True)
+
+        logger.debug(f'Returning {self.dtype} with {df.shape[0]} unique entries.')
+
+        return df
+
+    def _read_ids(self, path: Path) -> set:
+        """Read ' '-separated ids from @path"""
+        ids = {i.strip() for i in path.read_text().split()}
+        return ids
+
+    def _write_ids(self, existing_ids: set, path: Path):
+        """
+        Append ids from @self.data to @existing_ids and write to @path in a
+          ' '-separated string format
+        """
+        data_ids = set(self.d['id'].unique().astype(str))
+        all_ids = existing_ids.union(data_ids)
+
+        t_ids = ' '.join(i for i in all_ids)
+        path.write_text(t_ids)
+
+        logger.info(f'Updated {self.dtype} ids; total: '
+                    f'{len(existing_ids)}(existing) + {len(data_ids)}(new) '
+                    f'= {len(all_ids)}')
 
 
 def convert_dtypes(df: pd.DataFrame, type_map: dict) -> pd.DataFrame:
