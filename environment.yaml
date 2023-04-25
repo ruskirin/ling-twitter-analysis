@@ -6,6 +6,8 @@ dependencies:
   - requests
   - yaml
   - python=3.10
+  - psycopg2
+  - sqlalchemy
   - notebook
   - numpy
   - unidecode

@@ -19,6 +19,7 @@ dtypes:
       mentions: string
       referenced_tweets: string
       lang: category
+      created_at: object
       public_metrics.retweet_count: UInt32
       public_metrics.reply_count: UInt32
       public_metrics.like_count: UInt32

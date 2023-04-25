@@ -250,31 +250,30 @@ class TwitterData:
             on_bad_lines='warn'
         )
 
-        try:
-            # Check if @dates columns in @data
-            if set(dates).issubset(data.columns):
+        # If @dates columns in @data, the convert to datetime
+        if set(dates).issubset(data.columns):
+            try:
                 data.loc[:, dates] = data.loc[:, dates].apply(
-                    pd.to_datetime, format=date_formats['cleaned'], utc=True
+                    pd.to_datetime,
+                    format=date_formats['cleaned'],
+                    utc=True
                 )
-                # Remove timezone information as it conflicts with saving in Excel
+            except (ParserError, ValueError):
+                data.loc[:, dates] = data.loc[:, dates].apply(
+                    pd.to_datetime,
+                    format=date_formats['extracted'],
+                    utc=True
+                )
+            try:
+                # Remove timezone information as it conflicts with saving
+                #   in Excel
                 for d in dates:
                     data[d] = data[d].dt.tz_localize(None)
+            except AttributeError as e:
+                logger.exception(e.args)
+                raise
 
-            return cls(data, topic, lang)
-        except ParserError:
-            # Check if @dates columns in @data
-            if set(dates).issubset(data.columns):
-                data.loc[:, dates] = data.loc[:, dates].apply(
-                    pd.to_datetime, format=date_formats['extracted'], utc=True
-                )
-                # Remove timezone information as it conflicts with saving in Excel
-                for d in dates:
-                    data[d] = data[d].dt.tz_localize(None)
-
-            return cls(data, topic, lang)
-        except ValueError as e:
-            logger.exception(f'Passed an invalid argument: \n{e.args}')
-            raise
+        return cls(data, topic, lang)
 
     @classmethod
     def from_json(cls, json_data, topic, lang):
@@ -357,4 +356,11 @@ def extract_verb_from_filename(path: Path):
 
 
 if __name__ == '__main__':
-    pass
+    path_e = Path('/home/rimov/Documents/Code/NLP/lin-que-dropping/data/extracted/saved/twitter/es/2023-02-08-at-23:05:39')
+    path_e_d = path_e/'tweets'/'es-acordar-original-tweets-0-597.csv'
+
+    path_c = Path('/home/rimov/Documents/Code/NLP/lin-que-dropping/data/cleaned/saved/twitter/es/20210726-combined')
+    path_c_d = path_c/'tweets.csv'
+
+    c = TwitterData.from_csv(path_c_d, 'es', topic='sample')
+    d = TwitterData.from_csv(path_e_d, 'es', topic='samples')
