@@ -1,17 +1,18 @@
 import yaml
-import files
 from pathlib import Path
 from logging import getLogger
 
+from utils import files
 
-logger = getLogger(__name__)
 
-types = {'g': 'general',
+CONFIG_TYPES = {'g': 'general',
          'conn': 'connection',
          'l': 'log',
          'e': 'extraction',
          'c': 'cleaning',
          'p': 'processing'}
+
+logger = getLogger(__name__)
 
 
 def get_yaml(path: Path):
@@ -34,11 +35,11 @@ def read_conf(conf_type='g') -> dict | None:
       (default: 'g')
     """
 
-    if conf_type not in types:
-        raise ValueError(f'Must pass valid @conf_type; one of: \n{types.items()}')
+    if conf_type not in CONFIG_TYPES:
+        raise ValueError(f'Must pass valid @conf_type; one of: \n{CONFIG_TYPES.items()}')
 
     try:
-        config_path = files.get_project_root()/'config'/f'{types[conf_type]}_config.yml'
+        config_path = files.get_project_root()/'config'/f'{CONFIG_TYPES[conf_type]}_config.yml'
         return get_yaml(config_path)
     except Exception as e:
         logger.exception(f'Failed to open config file! {e.args}')
@@ -55,7 +56,7 @@ def update_conf(conf: dict, conf_type: str) -> dict:
     :return: configuration file dictionary
     """
     try:
-        path = files.get_project_root()/'config'/f'{types[conf_type]}_config.yml'
+        path = files.get_project_root()/'config'/f'{CONFIG_TYPES[conf_type]}_config.yml'
         with open(path, 'w') as f:
             yaml.dump(conf, f)
 

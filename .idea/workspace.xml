@@ -1,14 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_INJECTED_CODE" value="false" />
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28a4ad1d-c401-42ea-ad76-8f8aff8e60d4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/lin-que-dropping.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/lin-que-dropping.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/twitterdata.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config/twitterdata.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/environment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/environment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.paths.pth.swp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/paths.pth" beforeDir="false" afterPath="$PROJECT_DIR$/paths.pth" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/cleaning.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/cleaning.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/corpes-cleaning.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/corpes-processing.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/mod-site-package.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analysis/test-psql.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/analysis/test-psql.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_connection/connection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/connection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_connection/response.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_connection/response.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_data/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_data/places.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/places.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_data/tweets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/tweets.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/twitter_data/twitter_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/twitter_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/twitter_data/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/twitter_data/users.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/configs.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/configs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/files.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/files.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/logs.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/logs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_twitter_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_twitter_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,33 +67,34 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Notification.DisplayName-DoNotAsk-CythonWarning": "Python debugger native extension available",
-    "Notification.DoNotAsk-CythonWarning": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/home/rimov/Documents/Code/Web/ling2021-que-drop",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "editor.preferences.folding",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Notification.DisplayName-DoNotAsk-CythonWarning&quot;: &quot;Python debugger native extension available&quot;,
+    &quot;Notification.DoNotAsk-CythonWarning&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/rimov/Documents/Code/Web/ling2021-que-drop&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.folding&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/utils" />
+      <recent name="$PROJECT_DIR$/src/dbschema" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/analysis/.ipynb_checkpoints" />
-      <recent name="$PROJECT_DIR$/src/analysis" />
-      <recent name="$PROJECT_DIR$/src/utils" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.twitter_data (1)">
-    <configuration name="connection" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.db">
+    <configuration name="db" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="lin-que-dropping" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -82,12 +102,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/twitter_connection" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/twitter_connection/connection.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/dbschema/db.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -172,11 +192,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.db" />
         <item itemvalue="Python.twitter_data (1)" />
         <item itemvalue="Python.tweets" />
         <item itemvalue="Python tests.Python tests for test_twitter_data.test_duplicate_detect" />
         <item itemvalue="Python tests.Python tests in test_twitter_data.py" />
-        <item itemvalue="Python.connection" />
       </list>
     </recent_temporary>
   </component>
@@ -238,6 +258,33 @@
       <workItem from="1681246255475" duration="120000" />
       <workItem from="1682021842567" duration="615000" />
       <workItem from="1682078491653" duration="10670000" />
+      <workItem from="1682970232620" duration="1821000" />
+      <workItem from="1683053719430" duration="4665000" />
+      <workItem from="1683120544844" duration="11928000" />
+      <workItem from="1683229987063" duration="1867000" />
+      <workItem from="1683299616079" duration="18000" />
+      <workItem from="1683591932854" duration="3745000" />
+      <workItem from="1683644001702" duration="7469000" />
+      <workItem from="1683728278568" duration="11462000" />
+      <workItem from="1683802856047" duration="1457000" />
+      <workItem from="1683921529819" duration="616000" />
+      <workItem from="1684148866114" duration="5913000" />
+      <workItem from="1684189386538" duration="330000" />
+      <workItem from="1684251567487" duration="5740000" />
+      <workItem from="1684331259434" duration="7103000" />
+      <workItem from="1684361020532" duration="606000" />
+      <workItem from="1684410424727" duration="1788000" />
+      <workItem from="1684691855239" duration="6141000" />
+      <workItem from="1684760760451" duration="23500000" />
+      <workItem from="1684845417363" duration="16171000" />
+      <workItem from="1684938212780" duration="12523000" />
+      <workItem from="1684968166788" duration="1336000" />
+      <workItem from="1685027950002" duration="15859000" />
+      <workItem from="1685114507241" duration="11349000" />
+      <workItem from="1685383218996" duration="6398000" />
+      <workItem from="1685457821994" duration="11775000" />
+      <workItem from="1685545143954" duration="13231000" />
+      <workItem from="1685621302158" duration="6071000" />
     </task>
     <servers />
   </component>
@@ -263,21 +310,6 @@
           <line>271</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/twitter_data/twitter_data.py</url>
-          <line>269</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/twitter_data/twitter_data.py</url>
-          <line>255</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/twitter_data/twitter_data.py</url>
-          <line>243</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
@@ -292,6 +324,7 @@
     <SUITE FILE_PATH="coverage/lin_que_dropping$tweets.coverage" NAME="tweets Coverage Results" MODIFIED="1682085942946" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/twitter_data" />
     <SUITE FILE_PATH="coverage/lin_que_dropping$twitter_data__1_.coverage" NAME="twitter_data (1) Coverage Results" MODIFIED="1682092974035" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/twitter_data" />
     <SUITE FILE_PATH="coverage/lin_que_dropping$twitter_data.coverage" NAME="twitter_data Coverage Results" MODIFIED="1676596102279" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/twitter_connection/twitter_data" />
+    <SUITE FILE_PATH="coverage/lin_que_dropping$db.coverage" NAME="db Coverage Results" MODIFIED="1685627236891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/lin_que_dropping$utils.coverage" NAME="utils Coverage Results" MODIFIED="1676912577876" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/lin_que_dropping$.coverage" NAME=" Coverage Results" MODIFIED="1677612925011" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/lin_que_dropping$cleaning.coverage" NAME="cleaning Coverage Results" MODIFIED="1676392695707" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/analysis" />

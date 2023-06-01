@@ -4,6 +4,7 @@ import regex
 import pandas as pd
 from pathlib import Path
 from unidecode import unidecode
+from utils import configs, files
 
 
 logger = logging.getLogger(__name__)
@@ -41,8 +42,8 @@ def update_ids(dir: Path, id_col: str, data_type: str) -> (int, set):
     if data_type not in {'tweets', 'users', 'places', 'twitterdata'}:
         return None
 
-    conf = u.get_config()
-    id_path = u.get_project_root()/conf['file_paths']['ids']/(data_type + '.txt')
+    conf = configs.read_conf()
+    id_path = files.get_project_root()/conf['file_paths']['ids']/(data_type + '.txt')
 
     with open(id_path, 'r') as f:
         ids = {i.strip() for i in f.read().split(',')}

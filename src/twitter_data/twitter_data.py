@@ -1,12 +1,10 @@
 import pandas as pd
 from pandas.errors import ParserError
-import csv
 from logging import getLogger
 from pathlib import Path
 from numpy import ceil, array_split
-from datetime import datetime
-import files
-import configs
+from utils import files, configs
+import sqlalchemy as psql
 
 
 # TODO 2/23: not sure if this should stay global here, be made into an
@@ -211,7 +209,7 @@ class TwitterData:
                  subset: list = None,
                  dtypes: dict = None,
                  dates: list = None,
-                 lineterminator=None):
+                 lineterminator='\n'):
         """
         Optimized version utilizing pandas.read_csv() with dtypes specified
 
@@ -346,7 +344,7 @@ def convert_dtypes(df: pd.DataFrame, type_map: dict) -> pd.DataFrame:
 def extract_verb_from_filename(path: Path):
     """Look for VOI in filename"""
     verbs = files.get_verb_conjugations().loc[:, 'verb'].to_numpy()
-    stem = path.stem
+    stem = path.stem.lower()
 
     for v in verbs:
         if v in stem:

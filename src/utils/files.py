@@ -3,7 +3,7 @@ from logging import getLogger
 from datetime import datetime
 import pandas as pd
 import regex as re
-import configs
+from utils import configs
 
 
 logger = getLogger(__name__)
@@ -182,6 +182,7 @@ def make_dir(dir_path,
         logger.exception(f'Cannot make directory -- invalid path: \n{fnf.args}')
     except Exception as e:
         logger.exception(f'Error while making directory! \n{e.args}')
+        raise
 
 
 def get_verb_conjugations() -> pd.DataFrame:

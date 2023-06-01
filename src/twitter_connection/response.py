@@ -1,7 +1,7 @@
 import json
 from logging import getLogger
 from pathlib import Path
-from src.twitter_data import TwitterData, Tweets, Users, Places
+from twitter_data import twitter_data, tweets, users, places
 
 
 logger = getLogger(__name__)
@@ -53,17 +53,17 @@ class Response:
             if t_type=='meta':
                 self.tables[t_type] = table
             elif t_type=='data':
-                data = Tweets.from_json(table, self.topic, self.lang)
+                data = tweets.Tweets.from_json(table, self.topic, self.lang)
                 self.tables['data'] = data
             elif t_type=='users':
-                data = Users.from_json(table, self.topic, self.lang)
+                data = users.Users.from_json(table, self.topic, self.lang)
                 self.tables[t_type] = data
             elif t_type=='places':
-                data = Places.from_json(table, self.topic, self.lang)
+                data = places.Places.from_json(table, self.topic, self.lang)
                 self.tables[t_type] = data
             elif isinstance(table, list):
                 # table is a list of values
-                data = TwitterData.from_json(table, self.topic, self.lang)
+                data = twitter_data.TwitterData.from_json(table, self.topic, self.lang)
                 self.tables[t_type] = data
             elif not isinstance(table, dict):
                 # table is some other object; save it
@@ -108,8 +108,8 @@ class Response:
                 if t_type=='meta':
                     continue
 
-                if isinstance(data, TwitterData):
-                    data.save_csv(path, batch_num=batch, sep_by_type=True)
+                if isinstance(data, twitter_data.TwitterData):
+                    data.save(path, batch_num=batch, sep_by_type=True)
 
         except Exception as e:
             logger.exception(e.args)

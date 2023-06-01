@@ -3,7 +3,7 @@ from logging import getLogger
 import pandas as pd
 from emoji import replace_emoji
 from unidecode import unidecode
-from twitter_data import TwitterData
+from twitter_data.twitter_data import TwitterData
 
 
 logger = getLogger(__name__)

@@ -3,8 +3,7 @@ from logging import getLogger
 from decouple import config, UndefinedValueError
 from time import sleep
 from response import Response
-import configs
-import files
+from utils import configs, files
 
 
 logger = getLogger(__name__)

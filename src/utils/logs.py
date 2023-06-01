@@ -1,8 +1,7 @@
 from datetime import datetime
 import logging
 import pandas
-import configs
-import files
+from utils import configs, files
 
 
 logger = logging.getLogger(__name__)
